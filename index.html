@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>⚡ Test de Ilusión Óptica - ¡CHARADAS!</title>
+    <title>⚡ Test de la rueda - ¡A Jugar!</title>
     <style>
-        /* Variables y Estilos Base */
+        /* Variables y Reset - Optimizadas para un look de juego */
         :root {
-            --bg-color: #0d0d0d; 
-            --card-bg-color: rgba(255, 255, 255, 0.1);
-            --border-color: #00ffff; /* Cian brillante */
+            --bg-color: #1a004b; /* Púrpura oscuro para fondo de juego */
+            --card-bg-color: rgba(30, 0, 70, 0.8);
+            --border-color: #7f00ff; /* Púrpura brillante */
             --text-color: #f9fafb;
             --subtitle-color: #d1d5db;
-            --primary-color: #00ffff;
-            --secondary-color: #ff00ff; /* Magenta */
-            --timer-start-color: #4ade80; 
-            --timer-end-color: #ff3333; 
-            --alert-color: #ffeb3b; /* Amarillo de alerta */
+            --primary-purple: #9b5cf6; /* Morado claro */
+            --primary-pink: #ec4899; /* Rosa fuerte */
+            --timer-start-color: #4ade80; /* Verde - OK */
+            --timer-end-color: #ff3333; /* Rojo - ¡PELIGRO! */
+            --answer-color-hover: #ffcc00; /* Dorado para resaltar */
         }
 
         * {
@@ -28,270 +28,406 @@
         body {
             font-family: 'Arial', sans-serif;
             background-color: var(--bg-color);
+            background-image: linear-gradient(135deg, var(--bg-color) 0%, #3a006f 100%);
             color: var(--text-color);
             display: flex;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            padding: 0;
+            padding: 1rem;
             text-align: center;
-            position: relative;
         }
 
         .container {
             width: 100%;
-            height: 100vh;
+            max-width: 650px;
             position: relative;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            overflow: hidden; /* Para que la imagen cubra todo */
         }
 
-        /* IMAGEN DE FONDO (Full Page Image) */
-        #quiz-image {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover; /* Asegura que la imagen cubra todo el contenedor */
-            filter: brightness(0.7); /* Oscurecer un poco para legibilidad */
-            transition: filter 0.5s ease-in-out;
-            z-index: 1;
-        }
-        .dim-image {
-             filter: brightness(0.3) blur(2px) !important; /* Oscurecer y desenfocar para la retroalimentación */
-        }
-        
-        /* Contenedores de Interfaz (Encima de la imagen) */
-        .header-overlay, .buttons-container, #feedback-overlay {
-            position: relative;
-            z-index: 10;
-        }
-
-        /* Encabezado (Contador y Título) */
-        .header-overlay {
-            padding: 1rem;
-            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0));
-        }
-
-        .question-counter { font-size: 1.2rem; font-weight: 700; color: var(--primary-color); margin-bottom: 0.5rem; transition: color 0.2s ease-in-out; }
-        .question-text { font-size: 0.9rem; color: var(--subtitle-color); }
-        
-        /* Temporizador */
-        @keyframes blink-animation { to { color: var(--timer-end-color); text-shadow: 0 0 10px var(--timer-end-color); } }
-        .blinking { animation: blink-animation 0.3s steps(2, start) infinite alternate; }
-
-        .timer-bar-container { width: 90%; max-width: 400px; height: 8px; background-color: rgba(255, 255, 255, 0.2); border-radius: 4px; overflow: hidden; margin: 0.5rem auto 0; }
-        .timer-bar { height: 100%; width: 100%; background-image: linear-gradient(to right, var(--timer-start-color), var(--timer-end-color)); border-radius: 4px; transition: width 0.1s linear; }
-
-        /* Botones de Respuesta (Abajo) */
-        .buttons-container {
-            width: 100%;
-            padding: 1rem;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0.75rem;
-            background: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0));
-        }
-
-        .btn {
-            padding: 1rem 1.5rem;
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: white;
-            background-color: rgba(255, 255, 255, 0.1);
-            border: 2px solid var(--primary-color);
-            border-radius: 0.75rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
-        }
-        .btn:hover:not(.disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 0 15px var(--primary-color);
-            background-color: rgba(255, 255, 255, 0.2);
-        }
-        .btn.disabled { opacity: 0.5; cursor: default; }
-        
-        /* --- Overlay de Retroalimentación (Feedback) --- */
-        #feedback-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: none; /* Inicialmente oculto */
-            align-items: center;
-            justify-content: center;
-            z-index: 20;
-            cursor: pointer; /* Para el click-to-skip */
-        }
-
-        .feedback-box {
-            background-color: rgba(0, 0, 0, 0.9); /* Fondo neutro oscuro para legibilidad */
-            color: var(--text-color);
-            padding: 2rem;
-            margin: 1rem;
-            border-radius: 1rem;
-            border: 3px solid var(--secondary-color);
-            max-width: 90%;
-            box-shadow: 0 0 30px rgba(255, 0, 255, 0.5);
-            animation: fadeInScale 0.4s ease-out;
-        }
-
-        .feedback-box h3 { font-size: 1.5rem; color: var(--primary-color); margin-bottom: 1rem; }
-        .feedback-box p { 
-            font-size: 1.1rem; 
-            line-height: 1.5; 
-            margin-bottom: 1rem;
-            text-align: left;
-            border-left: 3px solid var(--secondary-color);
-            padding-left: 10px;
-        }
-        .feedback-score { font-size: 1.5rem; font-weight: 700; color: var(--alert-color); }
-        .tts-hint { margin-top: 1.5rem; font-size: 0.9rem; color: var(--subtitle-color); }
-
-        /* Pantallas Finales/Iniciales */
         .screen {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--bg-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 30;
+            display: none;
             animation: fadeIn 0.5s ease-in-out;
         }
-        .screen.active { display: flex; }
-        .intro-card, .result-card {
-            background-color: rgba(30, 0, 70, 0.9);
+
+        .screen.active {
+            display: block;
+        }
+
+        .card {
+            background-color: var(--card-bg-color);
+            backdrop-filter: blur(5px);
             border: 2px solid var(--border-color);
             border-radius: 1.5rem;
             padding: 2rem;
-            max-width: 90%;
-            width: 500px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
-        .title { font-size: 2.5rem; font-weight: 800; background: linear-gradient(to right, var(--primary-color), var(--secondary-color)); -webkit-background-clip: text; background-clip: text; color: transparent; margin-bottom: 0.5rem; }
-        .score-display { font-size: 4rem; font-weight: 800; color: var(--primary-color); text-shadow: 0 0 15px var(--primary-color); margin-top: 1rem; }
 
-        /* Media Query para móvil */
-        @media (max-width: 600px) {
-            .title { font-size: 1.8rem; }
-            .feedback-box { padding: 1rem; }
-            .feedback-box h3 { font-size: 1.2rem; }
-            .feedback-box p { font-size: 0.9rem; }
-            .btn { font-size: 1rem; padding: 0.8rem 1rem; }
-            .buttons-container { gap: 0.5rem; }
+        .title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(to right, var(--primary-purple), var(--primary-pink));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 0.5rem;
         }
 
-        /* Animaciones */
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes fadeInScale { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+        .subtitle {
+            font-size: 1.25rem;
+            color: var(--subtitle-color);
+            margin-bottom: 2rem;
+        }
+        
+        /* Estilos del QUIZ - Foco en la urgencia y lo visual */
+        .quiz-header {
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1rem;
+        }
+
+        .question-counter {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--primary-purple);
+            margin-bottom: 0.5rem;
+            transition: color 0.2s ease-in-out; /* Transición para el blink */
+        }
+
+        /* Animación de Parpadeo (Blink) - Nivel "Jeopardy" */
+        @keyframes blink-animation {
+            to { color: var(--timer-end-color); text-shadow: 0 0 10px var(--timer-end-color); }
+        }
+        .blinking {
+            animation: blink-animation 0.3s steps(2, start) infinite alternate;
+        }
+
+        /* Barra de Tiempo Dinámica */
+        .timer-bar-container {
+            width: 100%;
+            height: 12px;
+            background-color: #374151;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .timer-bar {
+            height: 100%;
+            width: 100%;
+            background-image: linear-gradient(to right, var(--timer-start-color), var(--timer-end-color));
+            border-radius: 6px;
+            transition: width 0.1s linear;
+        }
+
+        .question-text {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--answer-color-hover);
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Cuadrícula 2x2 - SIMULACIÓN RUEDA/MOBILE-FIRST DEFAULT */
+        .answers-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* 2x2 por defecto */
+            gap: 1.25rem;
+        }
+
+        .answer-card {
+            position: relative;
+            border-radius: 1rem;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            aspect-ratio: 1 / 1; /* Cuadrado perfecto (RUEDA) */
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 1rem;
+            background-color: #374151;
+            border: 3px solid transparent;
+        }
+        .answer-card:hover {
+            transform: scale(1.03);
+            box-shadow: 0 0 20px var(--answer-color-hover), 0 0 10px rgba(255, 255, 255, 0.5);
+            border-color: var(--answer-color-hover);
+        }
+
+        .answer-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.7;
+            transition: transform 0.5s ease;
+        }
+
+        .answer-card:hover .answer-image {
+            transform: scale(1.05);
+            opacity: 1;
+        }
+
+        .answer-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 70%);
+            z-index: 1;
+        }
+
+        .answer-text {
+            position: relative;
+            z-index: 2;
+            font-size: 0.95rem; /* Tamaño base */
+            font-weight: 600;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 1);
+            text-align: left;
+        }
+
+        /* Media Query para Móviles PEQUEÑOS (<480px) */
+        @media (max-width: 480px) {
+            .card {
+                padding: 1rem;
+            }
+            .title {
+                font-size: 2rem;
+            }
+            .question-text {
+                font-size: 1.25rem;
+                margin-bottom: 1rem;
+            }
+            
+            /* FUERZA 2X2 Y ADAPTACIÓN DE TEXTO */
+            .answers-grid {
+                grid-template-columns: 1fr 1fr; /* Mantiene 2x2 */
+                gap: 0.75rem;
+            }
+            .answer-card {
+                aspect-ratio: 1 / 1; /* Mantiene cuadrado (ruleta) */
+                padding: 0.5rem; /* Menor padding */
+            }
+            .answer-text {
+                font-size: 0.65rem; /* Texto MUY pequeño para no estorbar la imagen */
+                line-height: 1.2;
+            }
+            .answer-image {
+                 display: block;
+                 opacity: 0.6;
+            }
+        }
+        /* ... (Resto de estilos no modificados) ... */
     </style>
 </head>
 <body>
 
     <main class="container">
         <div id="start-screen" class="screen active">
-            <div class="intro-card">
-                <h1 class="title">CHARADAS: ILUSIÓN ÓPTICA</h1>
-                <p class="subtitle">¡Descubre qué dice tu visión! Tendrás **10 segundos** para elegir tu primera percepción. El tiempo es crucial. </p>
+            <div class="card">
+                <h1 class="title">¡EL TEST DE LA RUEDA!</h1>
+                <p class="subtitle">Descubre tu personalidad en 15 preguntas ultrarrápidas. ¡Tienes **5 segundos por pregunta!**</p>
                 <form id="start-form">
-                    <input type="text" id="name-input" placeholder="Ingresa tu nombre de Jugador" class="name-input" autocomplete="off" required/>
-                    <button type="submit" class="btn">INICIAR DESAFÍO VISUAL</button>
+                    <input type="text" id="name-input" placeholder="Ingresa tu nombre de Jugador" class="name-input" autocomplete="off" />
+                    <button type="submit" class="btn">¡QUE EMPIECE EL JUEGO!</button>
                 </form>
             </div>
         </div>
 
         <div id="quiz-screen" class="screen">
-            <img id="quiz-image" src="" alt="Ilusión Óptica" />
-            
-            <div class="header-overlay">
-                <p id="question-counter" class="question-counter"></p>
-                <p id="question-text" class="question-text">¿Qué ves primero en esta imagen?</p>
-                <div class="timer-bar-container">
-                    <div id="timer-bar" class="timer-bar"></div>
+            <div class="card">
+                <div class="quiz-header">
+                    <p id="question-counter" class="question-counter"></p>
+                    <div class="timer-bar-container">
+                        <div id="timer-bar" class="timer-bar"></div>
+                    </div>
                 </div>
-            </div>
-
-            <div id="feedback-overlay" style="display: none;">
-                <div class="feedback-box">
-                    <h3 id="feedback-title"></h3>
-                    <p id="feedback-desc-a"></p>
-                    <p id="feedback-desc-b"></p>
-                    <p class="feedback-score">Puntuación Actual: <span id="current-score-display">0</span></p>
-                    <p class="tts-hint">Toca o haz click para escuchar el texto y continuar...</p>
-                </div>
-            </div>
-
-            <div id="buttons-container" class="buttons-container">
-                <button id="btn-a" class="btn">Respuesta: A</button>
-                <button id="btn-b" class="btn">Respuesta: B</button>
+                <h2 id="question-text" class="question-text"></h2>
+                <div id="answers-grid" class="answers-grid">
+                    </div>
             </div>
         </div>
 
         <div id="result-screen" class="screen">
-            <div class="result-card">
-                <h1 class="title">FIN DEL TEST</h1>
-                <p class="subtitle" id="final-congrats"></p>
-                <p class="subtitle">Puntuación Acumulada Final:</p>
-                <div id="final-score-display" class="score-display">0</div>
-                <button id="restart-btn" class="btn" style="margin-top: 2rem;">REINICIAR</button>
+            <div class="card">
+                <p id="congrats-message" class="subtitle"></p>
+                <h2 class="result-title">
+                    Tu <span class="title">Personalidad</span> es: <br><span id="personality-name"></span>
+                </h2>
+                <div class="result-description-box">
+                    <p id="personality-description"></p>
+                </div>
+                <p class="final-score">Puntuación Final: <span id="final-score" class="font-bold"></span></p>
+                <button id="restart-btn" class="btn">Jugar de Nuevo</button>
             </div>
         </div>
     </main>
 
     <script>
     document.addEventListener('DOMContentLoaded', () => {
-        
         // =================================================================================
-        // DATOS DEL CUESTIONARIO (20 Ilusiones Ópticas, +1/-1)
-        // Basado en el patrón de tu archivo "Tabla Seleccion Imagen Acertada.xlsx - Hoja1.csv"
-        // He creado 20 preguntas de ejemplo con los puntajes y descripciones.
+        // DATOS DEL CUESTIONARIO (Se mantienen como en tu archivo original)
         // =================================================================================
         const QUIZ_QUESTIONS = [
-            { id: 1, image: "Imagen1.PNG", optionA: "Opción A: +1 punto", optionB: "Opción B: -1 punto", scoreA: 1, scoreB: -1, descA: "Si dijiste la primera opción, eres: Reflexivo y analítico", descB: "Si dijiste la segunda opción, eres: Expresivo y sincero" },
-            { id: 2, image: "Imagen2.PNG", optionA: "Opción A: +1 punto", optionB: "Opción B: -1 punto", scoreA: 1, scoreB: -1, descA: "Si viste el primer patrón, eres: Orientado a los detalles.", descB: "Si viste el segundo patrón, eres: Visionario e intuitivo" },
-            { id: 3, image: "Imagen3.PNG", optionA: "Opción A: +1 punto", optionB: "Opción B: -1 punto", scoreA: 1, scoreB: -1, descA: "Tu mente capta la imagen global y resuelve problemas rápidamente.", descB: "Eres muy bueno reconociendo rostros y tienes alta sensibilidad social." },
-            { id: 4, image: "Imagen4.PNG", optionA: "Opción A: +1 punto", optionB: "Opción B: -1 punto", scoreA: 1, scoreB: -1, descA: "Tienes una visión general y estratégica.", descB: "Tienes una visión detallada y práctica." },
-            { id: 5, image: "Imagen5.PNG", optionA: "Opción A: +1 punto", optionB: "Opción B: -1 punto", scoreA: 1, scoreB: -1, descA: "Tu cerebro prioriza la estructura y el orden.", descB: "Tu cerebro prioriza la fluidez y el movimiento." },
-            { id: 6, image: "Imagen6.PNG", optionA: "Opción A: +1 punto", optionB: "Opción B: -1 punto", scoreA: 1, scoreB: -1, descA: "Tu personalidad tiende a la lógica y la objetividad.", descB: "Tu personalidad tiende a la emoción y la empatía." },
-            { id: 7, image: "Imagen7.PNG", optionA: "Opción A: +1 punto", optionB: "Opción B: -1 punto", scoreA: 1, scoreB: -1, descA: "Buscas la armonía y evitas el conflicto.", descB: "Buscas la verdad, aunque genere tensión." },
-            { id: 8, image: "Imagen8.PNG", optionA: "Opción A: +1 punto", optionB: "Opción B: -1 punto", scoreA: 1, scoreB: -1, descA: "Vives en el presente y te concentras en lo práctico.", descB: "Siempre estás pensando en el futuro y las posibilidades." },
-            { id: 9, image: "Imagen9.PNG", optionA: "Opción A: +1 punto", optionB: "Opción B: -1 punto", scoreA: 1, scoreB: -1, descA: "Tu mente es rápida para categorizar y planificar.", descB: "Tu mente es flexible y le gusta improvisar." },
-            { id: 10, image: "Imagen10.PNG", optionA: "Opción A: +1 punto", optionB: "Opción B: -1 punto", scoreA: 1, scoreB: -1, descA: "Eres un líder nato, orientado a los resultados.", descB: "Eres un seguidor leal, orientado al apoyo." },
-            { id: 11, image: "Imagen11.PNG", optionA: "Opción A: +1 punto", optionB: "Opción B: -1 punto", scoreA: 1, scoreB: -1, descA: "Tu atención es selectiva, te enfocas en un punto clave.", descB: "Tu atención es amplia, procesas el panorama completo." },
-            { id: 12, image: "Imagen12.PNG", optionA: "Opción A: +1 punto", optionB: "Opción B: -1 punto", scoreA: 1, scoreB: -1, descA: "Eres un introvertido reflexivo y reservado.", descB: "Eres un extrovertido social y abierto." },
-            { id: 13, image: "Imagen13.PNG", optionA: "Opción A: +1 punto", optionB: "Opción B: -1 punto", scoreA: 1, scoreB: -1, descA: "Tu fortaleza reside en el análisis crítico.", descB: "Tu fortaleza reside en la creatividad abstracta." },
-            { id: 14, image: "Imagen14.PNG", optionA: "Opción A: +1 punto", optionB: "Opción B: -1 punto", scoreA: 1, scoreB: -1, descA: "Eres metódico, te gustan las reglas y la rutina.", descB: "Eres espontáneo, te gusta el cambio y la aventura." },
-            { id: 15, image: "Imagen15.PNG", optionA: "Opción A: +1 punto", optionB: "Opción B: -1 punto", scoreA: 1, scoreB: -1, descA: "Priorizas la lógica y la toma de decisiones basada en datos.", descB: "Priorizas los valores y el impacto en las personas." },
-            { id: 16, image: "Imagen16.PNG", optionA: "Opción A: +1 punto", optionB: "Opción B: -1 punto", scoreA: 1, scoreB: -1, descA: "Te sientes más cómodo cuando tienes el control de las situaciones.", descB: "Dejas que las situaciones te guíen, disfrutas el proceso." },
-            { id: 17, image: "Imagen17.PNG", optionA: "Opción A: +1 punto", optionB: "Opción B: -1 punto", scoreA: 1, scoreB: -1, descA: "Tu energía se incrementa con la interacción social.", descB: "Tu energía se recupera con el silencio y la soledad." },
-            { id: 18, image: "Imagen18.PNG", optionA: "Opción A: +1 punto", optionB: "Opción B: -1 punto", scoreA: 1, scoreB: -1, descA: "Eres un pensador lineal, una idea a la vez.", descB: "Eres un pensador paralelo, muchas ideas al mismo tiempo." },
-            { id: 19, image: "Imagen19.PNG", optionA: "Opción A: +1 punto", optionB: "Opción B: -1 punto", scoreA: 1, scoreB: -1, descA: "Eres muy bueno recordando detalles específicos del pasado.", descB: "Eres muy bueno imaginando escenarios posibles para el futuro." },
-            { id: 20, image: "Imagen20.PNG", optionA: "Opción A: +1 punto", optionB: "Opción B: -1 punto", scoreA: 1, scoreB: -1, descA: "Te defines por tu capacidad de planificar y organizar.", descB: "Te defines por tu capacidad de adaptarte y ser espontáneo." },
+            {
+                question: "¿Si alguien hiciera una película basada en tu vida, de qué género sería?",
+                answers: [
+                    { text: "Una comedia romántica con un final feliz, el amor gana.", score: 20 },
+                    { text: "Una película muda en blanco y negro, soy ha sido elegante.", score: 40 },
+                    { text: "Varios cortos graciosos, mi vida es demasiado divertida.", score: 10 },
+                    { text: "Una película de superhéroes, planeo salvar el mundo.", score: 30 },
+                ],
+            },
+            {
+                question: "¿Cuál es tu lugar feliz?",
+                answers: [
+                    { text: "La biblioteca, me teletransporta a mi mundo imaginario.", score: 40 },
+                    { text: "Mi casa, mi familia siempre está ahí para ayudar.", score: 10 },
+                    { text: "En algún lugar junto al mar, puedo contarle mis problemas y me ayuda.", score: 30 },
+                    { text: "En medio de una multitud, me gusta observar la vida.", score: 20 },
+                ],
+            },
+            {
+                question: "¿Mira a tu alrededor qué color prevalece en tu habitación?",
+                answers: [
+                    { text: "Verde o azul, me mantienen equilibrado y me ayudan a relajarse.", score: 30 },
+                    { text: "Una mezclade colores brillantes, nunca puedo elegir sólo uno.", score: 10 },
+                    { text: "Blanco, limpio ordenado sin distracciones.", score: 40 },
+                    { text: "Prefiero los patrones a los colores.", score: 20 },
+                ],
+            },
+            {
+                question: "¿Cómo sería tu logotipo personal?",
+                answers: [
+                    { text: "Un león sentado orgullosamente en un trono, divertido.", score: 20 },
+                    { text: "Unicornio montado en un arco iris.", score: 40 },
+                    { text: "Solo mis iniciales, me gustan mantenerme oficial.", score: 10 },
+                    { text: "El globo terráqueo con mi retrato, soy un trotamundos.", score: 30 },
+                ],
+            },
+            {
+                question: "¿Cuál de estos animales elegirías como mascota?",
+                answers: [
+                    { text: "Un cachorro, era un amigo fiel y esponjosito.", score: 10 },
+                    { text: "Un gatito, gatos para siempre.", score: 20 },
+                    { text: "Un panda, quiero salir en televisión con el.", score: 40 },
+                    { text: "Una tortuga, lenta pero sabia.", score: 30 },
+                ],
+            },
+            {
+                question: "¿Cuál es tu peor cualidad?",
+                answers: [
+                    { text: "Soy demasiado emocional, trabajo-familia me preocupo mucho por todo.", score: 10 },
+                    { text: "Planeo demasiado, cuando las cosas no funcionan me entristece mucho.", score: 30 },
+                    { text: "No es fácil para mí confiar en las personas, por eso no puedo hacer amigos.", score: 40 },
+                    { text: "Soy imparable, no tengo un botón de parada cuando quiero algo lo consigo pase lo que pase.", score: 20 },
+                ],
+            },
+            {
+                question: "¿Qué no perdonaría nunca?",
+                answers: [
+                    { text: "Que mi mejor amigo me mienta.", score: 10 },
+                    { text: "Que alguien más se atribuye el mérito de todo mi trabajo.", score: 20 },
+                    { text: "Que mis amigos hablen mal de mí a mis espaldas.", score: 30 },
+                    { text: "Que mi pareja no me apoye en la persecución de mis sueños.", score: 40 },
+                ],
+            },
+            {
+                question: "¿Si tuvieras que comer un alimento por el resto de tu vida cuál sería?",
+                answers: [
+                    { text: "Pizza, pasta, este tipo de cosas.", score: 20 },
+                    { text: "Vegetales, son buenos y saludables.", score: 40 },
+                    { text: "Postres, creo que sobreviviré con postres.", score: 30 },
+                    { text: "Comida chatarra por siempre.", score: 10 },
+                ],
+            },
+            {
+                question: "¿Dónde te encuentras más a menudo en tus sueños?",
+                answers: [
+                    { text: "En algún lugar de mi pasado, estos recuerdos me hacen sonreír.", score: 40 },
+                    { text: "Algún país exótico, en el que nunca ha estado amo viajar.", score: 30 },
+                    { text: "Escuela, sigo teniendo esta pesadilla.", score: 10 },
+                    { text: "En un escenario, obteniendo ese merecido premio.", score: 20 },
+                ],
+            },
+            {
+                question: "¿Acabas de recibir un nuevo escritorio para computadora, podrías?:",
+                answers: [
+                    { text: "Seguir el manual al pie de la letra para armarlo.", score: 10 },
+                    { text: "Llamar a alguien que sepa cómo hacerlo.", score: 20 },
+                    { text: "Experimentar, lo lograré eventualmente.", score: 40 },
+                    { text: "Porqué compraría un escritorio, puedo construirlo yo mismo.", score: 30 },
+                ],
+            },
+            {
+                question: "¿Te mudas a una nueva casa, de que te ocuparías primero?",
+                answers: [
+                    { text: "Mi dormitorio, es la parte más importante de la casa.", score: 10 },
+                    { text: "La sala de estar, no puedo esperar para hacer una fiesta.", score: 20 },
+                    { text: "La cocina, me encanta cocinar y no puedo hacerlo en medio de un desastre.", score: 30 },
+                    { text: "El patio trasero, plantar y algunos árboles y flores.", score: 40 },
+                ],
+            },
+            {
+                question: "¿Cómo te sentiste hoy cuando te despertaste?",
+                answers: [
+                    { text: "Listo para conquistar el mundo y lleno de energía.", score: 30 },
+                    { text: "Un poco enojado, los problemas de ayer me están molestando demasiado.", score: 20 },
+                    { text: "No recuerdo así que nada especial supongo.", score: 10 },
+                    { text: "Cansado como siempre, nunca puedo dormir lo suficiente.", score: 40 },
+                ],
+            },
+            {
+                question: "No puedes terminar un proyecto en equipo a tiempo, ¿qué vas a hacer?",
+                answers: [
+                    { text: "Hacer mi parte, entregarla y ver lo que dice el jefe.", score: 20 },
+                    { text: "Tratar de encontrar una solución inteligente.", score: 40 },
+                    { text: "Culpar a los demás y decir que hice lo mejor que pude.", score: 30 },
+                    { text: "Inventar una historia loca sobre, porque no terminamos a tiempo.", score: 10 },
+                ],
+            },
+            {
+                question: "Estás de excursión con tus amigos, uno de ellos no puede subir a la cima de la montaña, ¿qué haces?",
+                answers: [
+                    { text: "Regresar, a todo el grupo.", score: 10 },
+                    { text: "Dividirse, algunas personas realmente querían observar esa vista.", score: 20 },
+                    { text: "Subir solo, sin importar lo que decidan los demás.", score: 40 },
+                    { text: "Dejar a esa persona sola y luego volver por ella.", score: 30 },
+                ],
+            },
+            {
+                question: "¿Ya debes tener sed, elige una bebida para llevar?",
+                answers: [
+                    { text: "Un batido, por favor.", score: 30 },
+                    { text: "Sólo agua.", score: 20 },
+                    { text: "No puedo vivir sin café.", score: 40 },
+                    { text: "Elegir un refresco.", score: 10 },
+                ],
+            },
         ];
 
-        // =================================================================================
-        // LÓGICA DE LA APLICACIÓN Y CONTROL DE FLUJO
-        // =================================================================================
-        const QUESTION_TIMER_SECONDS = 10;
-        const FEEDBACK_DURATION_SECONDS = 3; 
+        const PERSONALITY_RESULTS = [
+            { name: "Personalidad Verde", minScore: 150, maxScore: 230, description: "Eres solidario, leal, con habilidades excepcionales para la comunicación, puedes leer las emociones de los demás y compartir tu energía curativa positiva, siempre encuentras la solución más original a cualquier problema, te sientes igual de bien entre la gente.", color: "#4ade80" },
+            { name: "Personalidad Morado", minScore: 240, maxScore: 330, description: "Eres lógico, serio y estás en perfecto equilibrio entre tu cuerpo y tu mente, puedes resolver cualquier conflicto y la gente acude a ti para pedirte consejo, eres misterioso único e increíblemente, interesante por naturaleza a través a otros, disfrutas la lectura y eres muy sabio para tu edad.", color: "#a78bfa" },
+            { name: "Personalidad Roja", minScore: 340, maxScore: 420, description: "Energía y pasión son las dos palabras que mejor te describen, puedes lidiar con cualquier proyecto, la gente confía en ti y sigue tu impulso, el amor y las relaciones son importantes para ti, eres el alma de cualquier fiesta, nada puede asustarse o detenerte.", color: "#f87171" },
+            { name: "Personalidad Azul", minScore: 430, maxScore: 509, description: "Eres un explorador natural, nunca te lo piensas dos veces, si alguien te ofrece probar algo nuevo o ir a un lugar nuevo vives todos los días al máximo y no te arrepientes, también eres una persona muy amable y siempre ayudarás a un amigo sin importar lo que te cueste.", color: "#60a5fa" },
+            { name: "Personalidad Blanco", minScore: 510, maxScore: Infinity, description: "Eres un artista de corazón, crear algo con las manos o la mente te hace más feliz, puedes parecer tímido, pero eso se debe a que siempre estás en el mundo de los sueños, ves belleza en las pequeñas cosas y quieres hacer del mundo un lugar mejor.", color: "#e5e7eb" }
+        ];
 
+        const QUESTION_TIMER_SECONDS = 5; 
+        
+        // =================================================================================
+        // LÓGICA DE LA APLICACIÓN Y BLINK
+        // =================================================================================
         let currentQuestionIndex = 0;
+        let score = 0;
         let userName = '';
-        let totalScore = 0;
         let timerTimeout;
-        let blinkTimeout;
-        let feedbackTimeout;
-        let tts = window.speechSynthesis;
-        let ttsActive = false;
+        let blinkTimeout; // Nuevo timeout para el blink
 
         // Elementos del DOM
         const startScreen = document.getElementById('start-screen');
@@ -301,43 +437,35 @@
         const nameInput = document.getElementById('name-input');
         const questionCounter = document.getElementById('question-counter');
         const timerBar = document.getElementById('timer-bar');
-        const quizImage = document.getElementById('quiz-image');
         const questionText = document.getElementById('question-text');
-        const buttonsContainer = document.getElementById('buttons-container');
-        const btnA = document.getElementById('btn-a');
-        const btnB = document.getElementById('btn-b');
-        const feedbackOverlay = document.getElementById('feedback-overlay');
-        const finalScoreDisplay = document.getElementById('final-score-display');
-        const finalCongrats = document.getElementById('final-congrats');
-        const currentScoreDisplay = document.getElementById('current-score-display');
+        const answersGrid = document.getElementById('answers-grid');
+        const congratsMessage = document.getElementById('congrats-message');
+        const personalityName = document.getElementById('personality-name');
+        const personalityDescription = document.getElementById('personality-description');
+        const finalScore = document.getElementById('final-score');
+        const restartBtn = document.getElementById('restart-btn');
 
+        const answerMap = ['a', 'b', 'c', 'd'];
 
         // Event Listeners
         startForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            userName = nameInput.value.trim() || 'Jugador Experto';
+            userName = nameInput.value.trim() || 'Jugador Audaz';
             startQuiz();
         });
-        document.getElementById('restart-btn').addEventListener('click', restartQuiz);
-        btnA.addEventListener('click', () => selectAnswer(QUIZ_QUESTIONS[currentQuestionIndex].scoreA, 'A'));
-        btnB.addEventListener('click', () => selectAnswer(QUIZ_QUESTIONS[currentQuestionIndex].scoreB, 'B'));
-        
-        // Clic en la retroalimentación para saltar y leer en voz alta
-        feedbackOverlay.addEventListener('click', handleFeedbackClick);
+        restartBtn.addEventListener('click', restartQuiz);
 
         // Funciones de control de pantalla
         function switchScreen(activeScreen) {
             document.querySelectorAll('.screen').forEach(screen => {
-                screen.style.display = 'none';
                 screen.classList.remove('active');
             });
-            activeScreen.style.display = 'flex'; // Usar flex para centrar
             activeScreen.classList.add('active');
         }
 
         function startQuiz() {
             currentQuestionIndex = 0;
-            totalScore = 0;
+            score = 0;
             switchScreen(quizScreen);
             displayQuestion();
         }
@@ -347,50 +475,46 @@
             switchScreen(startScreen);
         }
 
-        // --- LÓGICA DEL JUEGO ---
-
+        // Función principal para mostrar la pregunta
         function displayQuestion() {
-            // Asegurarse de que el TTS está detenido si el usuario avanzó rápido
-            if (ttsActive) {
-                tts.cancel();
-                ttsActive = false;
-            }
-
-            // Si llegamos al final, mostramos resultados
             if (currentQuestionIndex >= QUIZ_QUESTIONS.length) {
                 showResult();
                 return;
             }
-            
-            // Limpiar estados previos
+
             clearTimeout(timerTimeout);
-            clearTimeout(blinkTimeout);
-            clearTimeout(feedbackTimeout);
-            questionCounter.classList.remove('blinking'); 
-            buttonsContainer.style.pointerEvents = 'auto'; // Habilitar botones
+            clearTimeout(blinkTimeout); // Limpiar blink
+            questionCounter.classList.remove('blinking'); // Quitar efecto blink
 
             const questionData = QUIZ_QUESTIONS[currentQuestionIndex];
-            const questionNumber = currentQuestionIndex + 1; 
+            const questionNumber = currentQuestionIndex + 1; // 1 a 15
             
-            // 1. Mostrar Imagen y Texto
-            quizImage.src = `img/${questionData.image}`; 
-            quizImage.classList.remove('dim-image'); // Quitar efecto de feedback
-            questionCounter.textContent = `PREGUNTA ${questionNumber} / ${QUIZ_QUESTIONS.length}`;
-            questionText.textContent = `¿Qué ves primero en esta imagen? (Imagen${questionData.id}.PNG)`;
-            
-            // 2. Mostrar Botones
-            btnA.textContent = questionData.optionA;
-            btnB.textContent = questionData.optionB;
-            btnA.classList.remove('disabled');
-            btnB.classList.remove('disabled');
+            questionCounter.textContent = `PREGUNTA ${questionNumber} / ${QUIZ_QUESTIONS.length} - ¡CORRE EL TIEMPO!`;
+            questionText.textContent = questionData.question;
+            answersGrid.innerHTML = '';
 
-            // 3. Ocultar Feedback
-            feedbackOverlay.style.display = 'none';
+            // Generar las cartas de respuesta con la ruta de imagen dinámica
+            questionData.answers.forEach((answer, index) => {
+                const answerLetter = answerMap[index];
+                const imagePath = `img/${questionNumber}${answerLetter}.GIF`; // Formato: img/1a.PNG, img/2b.PNG, etc.
+                
+                const answerCard = document.createElement('div');
+                answerCard.className = 'answer-card';
+                
+                answerCard.innerHTML = `
+                    <img src="${imagePath}" alt="Opción ${answerLetter.toUpperCase()} de la pregunta ${questionNumber}" class="answer-image" onerror="this.onerror=null;this.src='data:image/svg+xml,%3Csvg%20width%3D%22100%22%20height%3D%22100%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Crect%20width%3D%22100%22%20height%3D%22100%22%20fill%3D%22%234b5563%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20text-anchor%3D%22middle%22%20fill%3D%22white%22%20font-size%3D%2216%22%3E${questionNumber}${answerLetter.toUpperCase()}%3C%2Ftext%3E%3C%2Fsvg%3E';">
+                    <div class="answer-overlay"></div>
+                    <p class="answer-text">${answerLetter.toUpperCase()}: ${answer.text}</p>
+                `;
+                // Manejar la selección de respuesta
+                answerCard.addEventListener('click', () => selectAnswer(answer.score, answerCard));
+                answersGrid.appendChild(answerCard);
+            });
             
-            // 4. Iniciar Temporizador
             startTimer();
         }
         
+        // Lógica del Temporizador con Alerta y Blink
         function startTimer() {
             timerBar.style.transition = 'none';
             timerBar.style.width = '100%';
@@ -400,118 +524,59 @@
             timerBar.style.transition = `width ${QUESTION_TIMER_SECONDS}s linear`;
             timerBar.style.width = '0%';
             
-            // ALERTA SENSORIAL: Empezar a parpadear cuando queden 5 segundos
-            const alertTime = (QUESTION_TIMER_SECONDS - 5) * 1000; 
+            // BLINK: Empezar a parpadear cuando queden 2 segundos
+            const blinkTime = (QUESTION_TIMER_SECONDS - 2) * 1000; 
 
             blinkTimeout = setTimeout(() => {
                 questionCounter.classList.add('blinking');
-            }, alertTime);
+            }, blinkTime);
 
 
             timerTimeout = setTimeout(() => {
-                // Tiempo agotado: No se suma punto (0)
+                // El tiempo se agotó: Alerta y 0 puntos
                 questionCounter.classList.remove('blinking');
-                alert(`¡Tiempo, ${userName}! El sistema avanza (Puntuación: 0).`);
-                selectAnswer(0, 'TIMEOUT'); // Pasa 0 para puntaje neutro y forzar el avance
+                alert(`¡Se acabó el tiempo, ${userName}! Debe seleccionar una opción urgentemente. Sumas 0 puntos por esta. ⏱️`);
+                selectAnswer(0); 
             }, QUESTION_TIMER_SECONDS * 1000);
         }
 
-        function selectAnswer(score, selectedOption) {
+        function selectAnswer(answerScore, selectedElement = null) {
             clearTimeout(timerTimeout);
-            clearTimeout(blinkTimeout); 
+            clearTimeout(blinkTimeout); // Detener blink al responder
             questionCounter.classList.remove('blinking');
             
-            // 1. Actualizar Puntuación
-            totalScore += score;
+            score += answerScore;
             
-            // 2. Deshabilitar botones inmediatamente para evitar doble click
-            buttonsContainer.style.pointerEvents = 'none';
-            btnA.classList.add('disabled');
-            btnB.classList.add('disabled');
-            
-            // 3. Mostrar Retroalimentación
-            showFeedback(score, selectedOption);
+            // Deshabilitar todas las opciones para evitar doble clic
+            const allCards = answersGrid.querySelectorAll('.answer-card');
+            allCards.forEach(card => card.classList.add('disabled'));
+
+            // Resaltar la respuesta seleccionada (solo si se seleccionó una)
+            if (selectedElement) {
+                selectedElement.style.border = '3px solid #4ade80'; // Borde verde para la opción elegida
+                selectedElement.style.transform = 'scale(1.03)';
+                selectedElement.style.boxShadow = '0 0 20px #4ade80';
+            }
+
+            // Pequeño retraso para que el usuario vea su elección antes de avanzar
+            setTimeout(() => {
+                currentQuestionIndex++;
+                displayQuestion();
+            }, 500); 
         }
 
-        // --- RETROALIMENTACIÓN Y TTS ---
-
-        function showFeedback(score, selectedOption) {
-            const data = QUIZ_QUESTIONS[currentQuestionIndex];
-            
-            // 1. Dim y mostrar overlay
-            quizImage.classList.add('dim-image');
-            feedbackOverlay.style.display = 'flex';
-            
-            // 2. Preparar textos de retroalimentación
-            const descA_text = data.descA;
-            const descB_text = data.descB;
-
-            document.getElementById('feedback-title').textContent = `Tu elección te dió ${score} punto(s).`;
-            document.getElementById('feedback-desc-a').innerHTML = `**Opción A (+1)**: ${descA_text}`;
-            document.getElementById('feedback-desc-b').innerHTML = `**Opción B (-1)**: ${descB_text}`;
-            document.getElementById('current-score-display').textContent = totalScore;
-            
-            // 3. Iniciar temporizador de 3 segundos
-            feedbackTimeout = setTimeout(() => {
-                nextQuestion();
-            }, FEEDBACK_DURATION_SECONDS * 1000);
-        }
-
-        function handleFeedbackClick() {
-            // El usuario toca/clickea el overlay de feedback.
-            // 1. Leer el texto en voz alta
-            const descA = document.getElementById('feedback-desc-a').textContent;
-            const descB = document.getElementById('feedback-desc-b').textContent;
-            const fullText = `Tu puntuación es ${totalScore}. ${descA}. Y ${descB}.`;
-            
-            speakText(fullText);
-
-            // 2. Saltar a la siguiente pregunta inmediatamente
-            clearTimeout(feedbackTimeout);
-            nextQuestion();
-        }
-
-        function speakText(text) {
-            if (!tts) return; // Si TTS no es compatible, salir
-
-            // Detener cualquier lectura previa
-            tts.cancel();
-            
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'es-ES'; // Asegurar el idioma
-            utterance.rate = 1.1; // Un poco más rápido
-            
-            utterance.onstart = () => { ttsActive = true; };
-            utterance.onend = () => { ttsActive = false; };
-
-            tts.speak(utterance);
-        }
-
-
-        function nextQuestion() {
-            // Detener TTS si aún está leyendo
-            tts.cancel();
-            ttsActive = false;
-
-            currentQuestionIndex++;
-            displayQuestion();
-        }
-        
-        // --- RESULTADO FINAL ---
-
+        // Función para mostrar resultados
         function showResult() {
-            finalCongrats.textContent = `¡Excelente esfuerzo, ${userName}!`;
-            finalScoreDisplay.textContent = totalScore;
+            const result = PERSONALITY_RESULTS.find(r => score >= r.minScore && score <= r.maxScore) || PERSONALITY_RESULTS[PERSONALITY_RESULTS.length - 1];
             
-            // Puedes agregar aquí una descripción de la personalidad basada en el puntaje total
-            // Por ejemplo: Positivo es "Visionario", Negativo es "Analítico", etc.
-            
+            congratsMessage.textContent = `¡Juego Terminado, ${userName}!`;
+            personalityName.textContent = result.name;
+            personalityName.style.color = result.color;
+            personalityDescription.textContent = result.description;
+            finalScore.textContent = score;
+
             switchScreen(resultScreen);
         }
-
-        // Inicializar
-        switchScreen(startScreen);
-
     });
     </script>
 </body>
