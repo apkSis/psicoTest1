@@ -1,1026 +1,356 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Autoanálisis Psicológico Profundo — Offline</title>
-  <meta name="description" content="Aplicación offline para cuestionario psicológico profundo, registro somático, cartas terapéuticas y plan de ejercicios." />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Carlos Veizaga | Hoja de Vida Profesional</title>
+  <meta name="description" content="Portafolio profesional de Carlos Veizaga, consultor en transformación digital, IT/OT y ciberseguridad industrial.">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  
   <style>
-    /* ---------------------------
-       CSS Mobile-First (responsive)
-       --------------------------- */
-
-    :root{
-      --bg: #f6f7f9;
-      --card: #ffffff;
-      --accent: #3b82f6;
-      --muted: #6b7280;
-      --danger: #ef4444;
-      --success: #16a34a;
-      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      color-scheme: light;
+    body {
+      font-family: "Arial", sans-serif;
+      background: linear-gradient(120deg, #f5f7fa, #e4ecf2);
+      overflow-x: hidden;
+      margin: 0;
+      padding-top: 190px; /* espacio para header + navbar fijos */
     }
 
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      background: linear-gradient(180deg,#f6f7f9, #eef2ff 80%);
-      color:#111827;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-      font-size:16px;
-      line-height:1.4;
+    /* ===== CABECERA ===== */
+    header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1030;
+      background: rgba(31, 42, 68, 0.96);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.8rem 2rem;
+      height: 110px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+      backdrop-filter: blur(6px);
     }
 
-    /* Layout */
-    .app{
-      display:flex;
-      min-height:100vh;
-      align-items:stretch;
+    .header-text {
+      flex: 1;
+      animation: fadeInDown 1.5s ease;
+      color: #fff;
     }
 
-    /* Sidebar (colapsable en mobile) */
-    .sidebar{
-      width:72px;
-      background:var(--card);
-      border-right:1px solid #e6e9ef;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      padding:12px 6px;
-      gap:8px;
-    }
-    .sidebar .logo{
-      width:48px;height:48px;border-radius:8px;
-      background:linear-gradient(135deg,var(--accent),#6ee7b7);
-      display:flex;align-items:center;justify-content:center;color:white;font-weight:700;
-      box-shadow:0 6px 18px rgba(59,130,246,0.12);
-      margin-bottom:6px;
-      font-size:14px;
-    }
-    .nav-btn{
-      width:48px;height:48px;border-radius:10px;border:0;background:transparent;color:var(--muted);
-      display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;
-    }
-    .nav-btn.active{background:#eef2ff;color:var(--accent);box-shadow:inset 0 0 0 1px rgba(59,130,246,0.06)}
-
-    /* Main content */
-    .main{
-      flex:1;
-      padding:18px;
-    }
-    header.app-header{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      margin-bottom:12px;
-    }
-    h1{font-size:18px;margin:0}
-    .controls{display:flex;gap:8px;align-items:center}
-    .btn{
-      background:var(--accent);color:white;border:0;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:600;
-    }
-    .btn.secondary{background:transparent;color:var(--accent);border:1px solid rgba(59,130,246,0.12)}
-    .btn.danger{background:var(--danger)}
-    .small{padding:6px 8px;font-size:14px;border-radius:6px}
-
-    /* Cards */
-    .card{
-      background:var(--card);
-      border-radius:12px;
-      padding:12px;
-      box-shadow: 0 6px 18px rgba(3,7,18,0.04);
-      margin-bottom:12px;
-      border:1px solid #f0f2f6;
+    .header-text h1 {
+      font-size: 1.8rem;
+      font-weight: bold;
+      margin-bottom: 0.3rem;
+      color: #fff;
     }
 
-    /* Forms, inputs */
-    label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
-    input[type="text"], textarea, select {
-      width:100%;padding:10px;border-radius:8px;border:1px solid #e6e9ef;background:transparent;
-      font-size:15px;color:#111827;
-    }
-    textarea{min-height:90px;resize:vertical}
-    .row{display:flex;gap:12px;flex-wrap:wrap}
-    .col{flex:1;min-width:180px}
-
-    /* List/table */
-    table{width:100%;border-collapse:collapse}
-    th,td{padding:8px;text-align:left;border-bottom:1px solid #eef2f7;font-size:14px}
-    .muted{color:var(--muted);font-size:13px}
-    .small-text{font-size:13px;color:var(--muted)}
-
-    /* Mobile specific */
-    @media(min-width:900px){
-      .sidebar{width:220px;align-items:flex-start;padding:18px}
-      .sidebar .logo{width:64px;height:64px;font-size:18px}
-      .nav-btn{width:100%;height:auto;padding:8px;border-radius:10px;text-align:left}
+    .header-text p {
+      margin: 0;
+      font-size: 0.95rem;
+      color: #fff;
     }
 
-    /* Tiny helpers */
-    .flex{display:flex;align-items:center;gap:8px}
-    .right{margin-left:auto}
-    .danger-text{color:var(--danger)}
-    .success-text{color:var(--success)}
-    .hidden{display:none}
-    .label-inline{font-size:13px;color:var(--muted);margin-right:6px}
-    .chip{display:inline-block;padding:4px 8px;border-radius:999px;background:#f3f4f6;font-size:13px;color:#374151}
-    .footer-note{font-size:13px;color:var(--muted);margin-top:8px}
+    .header-photo {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid white;
+      margin-left: 1rem;
+      transition: transform 0.4s ease;
+    }
+
+    .header-photo:hover { transform: scale(1.1); }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== NAVBAR ===== */
+    .navbar {
+      position: fixed;
+      top: 110px;
+      width: 100%;
+      background-color: rgba(31, 42, 68, 0.98) !important;
+      z-index: 1020;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      backdrop-filter: blur(5px);
+    }
+
+    .navbar-nav .nav-link {
+      color: white !important;
+      font-weight: 500;
+      margin: 0 0.6rem;
+      transition: color 0.3s, transform 0.3s;
+    }
+
+    .navbar-nav .nav-link:hover {
+      color: #00c2cb !important;
+      transform: scale(1.05);
+    }
+
+    .navbar-toggler {
+      border: none;
+      background: transparent !important;
+    }
+
+    .navbar-toggler:focus {
+      outline: none;
+      box-shadow: none;
+    }
+
+    .navbar-toggler-icon {
+      background-color: white;
+      mask: url('https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/icons/list.svg') no-repeat center;
+      -webkit-mask: url('https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/icons/list.svg') no-repeat center;
+    }
+
+    /* ===== CONTENIDO ===== */
+    section {
+      display: none;
+      padding: 2rem 1.2rem;
+      max-width: 1100px;
+      margin: 2rem auto;
+      background-color: rgba(255,255,255,0.93);
+      border-radius: 12px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+      animation: fadeIn 0.7s ease;
+    }
+
+    section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h3 {
+      color: #1f2a44;
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+
+    p, li { color: #333; }
+
+    ul { margin-top: 1rem; }
+    ul li { margin-bottom: 0.6rem; }
+
+    .btn-color {
+      background-color: #0097a7;
+      color: white;
+      border: none;
+      transition: 0.3s;
+    }
+
+    .btn-color:hover {
+      background-color: #007c8c;
+      color: white;
+    }
+
+    /* ÍCONOS INTERACTIVOS */
+    .iconos i {
+      font-size: 2rem;
+      margin: 0.5rem;
+      transition: transform 0.3s, color 0.3s;
+      color: #0097a7;
+    }
+
+    .iconos i:hover {
+      transform: scale(1.3);
+      color: #007c8c;
+    }
+
+    /* ===== PIE ===== */
+    footer {
+      text-align: center;
+      color: #555;
+      padding: 2rem 0;
+      font-size: 0.9rem;
+      margin-top: 3rem;
+      background: rgba(240, 244, 247, 0.9);
+    }
+
+    /* ===== FONDO ANIMADO ===== */
+    .animated-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background: radial-gradient(circle at 20% 30%, rgba(0,151,167,0.2), transparent 60%),
+                  radial-gradient(circle at 80% 70%, rgba(31,42,68,0.2), transparent 60%);
+      animation: moveBg 10s infinite alternate ease-in-out;
+    }
+
+    @keyframes moveBg {
+      0% { background-position: 20% 30%, 80% 70%; }
+      100% { background-position: 40% 40%, 60% 60%; }
+    }
+
+    @media (max-width: 768px) {
+      .header-text h1 { font-size: 1.4rem; }
+      .header-photo { width: 65px; height: 65px; }
+      body { padding-top: 180px; }
+    }
   </style>
 </head>
+
 <body>
-  <div class="app" id="appRoot">
-    <!-- Sidebar -->
-    <aside class="sidebar" id="sidebar">
-      <div class="logo">AP</div>
-      <button class="nav-btn active" data-section="cuestionario" title="Cuestionario (1)" id="btn-cuestionario">Cuestionario</button>
-      <button class="nav-btn" data-section="registro" title="Chequeos corporales" id="btn-registro">Chequeos</button>
-      <button class="nav-btn" data-section="carta" title="Carta terapéutica" id="btn-carta">Carta</button>
-      <button class="nav-btn" data-section="ejercicios" title="Ejercicios" id="btn-ejercicios">Ejercicios</button>
-      <button class="nav-btn" data-section="recordatorios" title="Recordatorios" id="btn-recordatorios">Recordatorios</button>
-      <button class="nav-btn" data-section="recomendaciones" title="Recomendaciones" id="btn-recomendaciones">Recomendaciones</button>
-      <div style="flex:1"></div>
-      <button class="nav-btn" id="btn-seed" title="Reset/Seed">Seed</button>
-      <button class="nav-btn" id="btn-export-json" title="Exportar JSON">Export</button>
-      <button class="nav-btn" id="btn-import-json" title="Importar JSON">Import</button>
-    </aside>
+  <div class="animated-bg"></div>
 
-    <!-- Main -->
-    <main class="main">
-      <header class="app-header">
-        <div>
-          <h1>Autoanálisis Psicológico Profundo — Offline</h1>
-          <div class="small-text">Mobile-first · Guardado local · SPA</div>
+  <!-- ===== CABECERA ===== -->
+  <header>
+    <div class="header-text">
+      <h1>Carlos Veizaga</h1>
+      <p>Consultor en Transformación Digital y Ciberseguridad Industrial</p>
+      <p><i class="bi bi-telephone-fill"></i> +591 680 680 40 | <i class="bi bi-envelope"></i> juancaveizaga@gmail.com</p>
+    </div>
+         <img src="cv.png" alt="Foto de Carlos Veizaga" class="header-photo">
+    </header>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container-fluid justify-content-between px-3">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-center" id="navbarMenu">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link" href="#" onclick="mostrar('sobre')">Sobre mí</a></li>
+          <li class="nav-item"><a class="nav-link" href="#" onclick="mostrar('experiencia')">Experiencia</a></li>
+          <li class="nav-item"><a class="nav-link" href="#" onclick="mostrar('certificaciones')">Certificaciones</a></li>
+          <li class="nav-item"><a class="nav-link" href="#" onclick="mostrar('proyectos')">Proyectos</a></li>
+          <li class="nav-item"><a class="nav-link" href="#" onclick="mostrar('contacto')">Contacto</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ===== CONTENIDO ===== -->
+  <main class="container">
+    <section id="sobre" class="active">
+      <h3>Administrador de Sistemas y Gestión Operativa | Especialista en Proyectos Tecnológicos y Estrategia Financiera | SCRUM Manager</h3>
+      <p>
+        Soy <strong>Carlos Veizaga</strong>, Ingeniero de Sistemas con MBA e Ingeniería Financiera, especializado en <strong>Transformación Digital</strong> y <strong>Ciberseguridad Industrial</strong>.
+      </p>
+      <p>
+        Profesional multidisciplinario con más de 25 años de experiencia en administración de sistemas, gestión de operaciones, y dirección de proyectos tecnológicos y financieros. 
+      </p>
+      <p>
+        Experto en implementación y optimización de procesos en entornos corporativos y comerciales, con sólida capacidad para liderar equipos, diseñar sistemas de control financiero y tecnológico, aplicando metodologías ágiles (SCRUM).
+      </p>
+      <p>
+        Destaco en la integración de estrategias financieras, operativas y tecnológicas, con especialización en análisis de datos, sistemas ERP, gestión de seguridad informática y transformación digital. 
+      </p>
+      <p>
+        Mi perfil combina una formación técnica avanzada en sistemas y una visión gerencial en administración y finanzas, lo que me permite aportar soluciones integrales de alto impacto.
+      </p>
+      <p>
+        Mi experiencia se centra en proyectos de virtualización, automatización, integración IT/OT y desarrollo de arquitecturas de nube privada con IA aplicada a la gestión y seguridad corporativa.
+      </p>
+      <p>
+        Lidero equipos multidisciplinarios en la implementación de soluciones sostenibles y eficientes alineadas a estándares internacionales (ISO, NIST, COBIT).
+      </p>
+      <div class="iconos text-center mt-4">
+        <i class="bi bi-cpu"></i>
+        <i class="bi bi-shield-lock"></i>
+        <i class="bi bi-cloud-arrow-up"></i>
+      </div>
+    </section>
+
+    <section id="experiencia">
+      <h3>Experiencia Profesional</h3>
+      <ul>
+        <li><strong>CEO – AIDOMOT.COM</strong> (2015 – Actualidad): Soluciones IoT y domótica industrial, CCTV, redes, seguridad perimetral y analítica de datos.</li>
+        <li><strong>CEO – KROMASYSTEM.COM</strong> (2012 – Actualidad): ERP/CRM con IA integrada, automatización documental y analítica de desempeño corporativo.</li>
+        <li><strong>Consultor Externo – Sector Financiero:</strong> Implementación de políticas SGSI bajo ISO 27001, NIST y ASFI.</li>
+      </ul>
+      <p>
+        Combino visión técnica y de negocio para generar valor real mediante la digitalización estratégica.
+      </p>
+      <div class="iconos text-center mt-4">
+        <i class="bi bi-cpu"></i>
+        <i class="bi bi-shield-lock"></i>
+        <i class="bi bi-cloud-arrow-up"></i>
+      </div>
+    </section>
+
+    <section id="certificaciones">
+      <h3>Certificaciones y Frameworks</h3>
+      <ul>
+        <li>ISO 27001 – Seguridad de la Información</li>
+        <li>ISO 22301 – Continuidad del Negocio</li>
+        <li>ISA/IEC 62443 – Ciberseguridad Industrial</li>
+        <li>COBIT 5, ITIL v4, NIST SP 800-82</li>
+        <li>Scrum, DevOps y Lean IT</li>
+      </ul>
+      <div class="iconos text-center mt-3">
+        <i class="bi bi-database-fill-gear" title="Docker"></i>
+        <i class="bi bi-shield-check" title="ISO"></i>
+        <i class="bi bi-cpu" title="IA"></i>
+      </div>
+    </section>
+
+    <section id="proyectos">
+      <h3>Proyectos Destacados</h3>
+      <ul>
+        <li><strong>Nube Privada Híbrida:</strong> Infraestructura virtualizada con Proxmox, Docker y Kubernetes.</li>
+        <li><strong>KromaSystem ERP:</strong> Sistema modular con IA aplicada a gestión operativa y financiera.</li>
+        <li><strong>Auditorias ISO:</strong> Sistema documental multinorma (ISO 9001, 27001, 22301).</li>
+      </ul>
+      <p>Todos mis proyectos priorizan eficiencia, seguridad y escalabilidad.</p>
+    </section>
+
+    <section id="contacto">
+      <h3>Contacto</h3>
+      <form action="https://formspree.io/f/mzzpnvqd" method="POST">
+        <div class="mb-3">
+          <label>Nombre</label>
+          <input type="text" name="nombre" class="form-control" required>
         </div>
-        <div class="controls">
-          <button class="btn small" id="btn-save-current">Guardar Actual</button>
-          <button class="btn secondary small" id="btn-export-csv">Exportar CSV</button>
-          <input type="file" id="file-import" accept=".json" style="display:none" />
+        <div class="mb-3">
+          <label>Correo</label>
+          <input type="email" name="email" class="form-control" required>
         </div>
-      </header>
-
-      <!-- Contenido de secciones -->
-      <section id="seccion-cuestionario" class="card">
-        <h2>Cuestionario (35 preguntas)</h2>
-        <form id="form-cuestionario" novalidate>
-          <div id="mbti-block" class="card" style="margin-bottom:8px">
-            <h3>MBTI — 8 pares (elige A o B y añade 1-2 frases)</h3>
-            <!-- Generar dinámicamente 1..8 -->
-            <div id="mbti-container"></div>
-          </div>
-
-          <div id="bfi-block" class="card">
-            <h3>BFI-2 — 20 ítems (escala 1–5)</h3>
-            <div id="bfi-container"></div>
-          </div>
-
-          <div id="aai-block" class="card">
-            <h3>AAI — Narrativas profundas (min 40 palabras)</h3>
-            <label for="q29">29. Describe un recuerdo temprano en que buscaste consuelo y cómo respondieron tus cuidadores.</label>
-            <textarea id="q29" name="q29" required></textarea>
-            <label for="q30">30. Describe una situación en la que te sentiste abandonado/a o rechazado/a por una figura cercana.</label>
-            <textarea id="q30" name="q30" required></textarea>
-            <label for="q31">31. Cuando enfrentas estrés emocional ahora, ¿a quién buscas y por qué?</label>
-            <textarea id="q31" name="q31" required></textarea>
-          </div>
-
-          <div id="ctq-block" class="card">
-            <h3>CTQ — Trauma infantil (0–4)</h3>
-            <div class="row">
-              <div class="col">
-                <label>32a. Físico (0-4)</label>
-                <select id="q32a" name="q32a" required>
-                  <option value="">Selecciona</option>
-                  <option value="0">0 - Nunca</option>
-                  <option value="1">1 - Rara vez</option>
-                  <option value="2">2 - A veces</option>
-                  <option value="3">3 - Frecuentemente</option>
-                  <option value="4">4 - Muy a menudo</option>
-                </select>
-              </div>
-              <div class="col">
-                <label>32b. Emocional (0-4)</label>
-                <select id="q32b" name="q32b" required>
-                  <option value="">Selecciona</option>
-                  <option value="0">0 - Nunca</option>
-                  <option value="1">1 - Rara vez</option>
-                  <option value="2">2 - A veces</option>
-                  <option value="3">3 - Frecuentemente</option>
-                  <option value="4">4 - Muy a menudo</option>
-                </select>
-              </div>
-            </div>
-            <div class="row" style="margin-top:8px">
-              <div class="col">
-                <label>32c. Negligencia (0-4)</label>
-                <select id="q32c" name="q32c" required>
-                  <option value="">Selecciona</option>
-                  <option value="0">0 - Nunca</option>
-                  <option value="1">1 - Rara vez</option>
-                  <option value="2">2 - A veces</option>
-                  <option value="3">3 - Frecuentemente</option>
-                  <option value="4">4 - Muy a menudo</option>
-                </select>
-              </div>
-              <div class="col">
-                <label>32d. Sexual (0-4)</label>
-                <select id="q32d" name="q32d" required>
-                  <option value="">Selecciona</option>
-                  <option value="0">0 - Nunca</option>
-                  <option value="1">1 - Rara vez</option>
-                  <option value="2">2 - A veces</option>
-                  <option value="3">3 - Frecuentemente</option>
-                  <option value="4">4 - Muy a menudo</option>
-                </select>
-              </div>
-            </div>
-            <label for="q33">33. Si quieres, narra un recuerdo específico (opcional)</label>
-            <textarea id="q33" name="q33"></textarea>
-          </div>
-
-          <div id="disonancia-block" class="card">
-            <h3>Exploración libre sobre emociones y disonancia</h3>
-            <label for="q34">34. Describe una creencia muy fuerte que si la cuestionaran te haría sentir incómodo o a la defensiva.</label>
-            <input type="text" id="q34" name="q34" required />
-            <label for="q35">35. Describe una contradicción entre lo que dices sentir y lo que haces.</label>
-            <textarea id="q35" name="q35" required></textarea>
-          </div>
-
-          <div class="flex" style="margin-top:12px">
-            <button type="submit" class="btn">Guardar cuestionario</button>
-            <button type="button" class="btn secondary" id="btn-cargar-demo">Cargar demo</button>
-            <div class="right small-text">Guardado local: <span id="last-saved">--</span></div>
-          </div>
-        </form>
-      </section>
-
-      <!-- Registro somático -->
-      <section id="seccion-registro" class="card hidden">
-        <h2>Hoja de registro somático / chequeos corporales</h2>
-        <form id="form-registro">
-          <label for="registro-fecha">Fecha</label>
-          <input type="date" id="registro-fecha" required />
-          <label for="registro-hora">Hora</label>
-          <input type="time" id="registro-hora" required />
-          <label for="registro-sensacion">Sensación corporal (resumen breve)</label>
-          <input type="text" id="registro-sensacion" required />
-          <label for="registro-emocion">Emoción principal</label>
-          <input type="text" id="registro-emocion" required />
-          <label for="registro-accion">Acción tomada</label>
-          <input type="text" id="registro-accion" placeholder="Ej: respiración, caminata, hablar con alguien" required />
-          <div class="row" style="margin-top:8px">
-            <button type="submit" class="btn">Agregar chequeo</button>
-            <button type="button" class="btn secondary" id="btn-export-registros">Exportar registros JSON</button>
-          </div>
-        </form>
-        <div class="card" style="margin-top:12px">
-          <h3>Registros guardados</h3>
-          <table id="tabla-registros">
-            <thead><tr><th>Fecha</th><th>Emoción</th><th>Acción</th><th></th></tr></thead>
-            <tbody></tbody>
-          </table>
+        <div class="mb-3">
+          <label>Mensaje</label>
+          <textarea name="mensaje" class="form-control" rows="4" required></textarea>
         </div>
-      </section>
+        <button type="submit" class="btn btn-color"><i class="bi bi-send-fill"></i> Enviar mensaje</button>
+      </form>
+    </section>
+  </main>
 
-      <!-- Carta terapéutica -->
-      <section id="seccion-carta" class="card hidden">
-        <h2>Carta terapéutica (no enviada)</h2>
-        <form id="form-carta">
-          <label for="carta-para">Dirigido a (ej: Padre, Pareja)</label>
-          <input type="text" id="carta-para" required />
-          <label for="carta-texto">Texto de la carta</label>
-          <textarea id="carta-texto" required></textarea>
-          <div class="row" style="margin-top:8px">
-            <button type="submit" class="btn">Guardar carta</button>
-            <button type="button" class="btn secondary" id="btn-export-cartas">Exportar cartas JSON</button>
-          </div>
-        </form>
-        <div class="card" style="margin-top:12px">
-          <h3>Cartas guardadas</h3>
-          <table id="tabla-cartas">
-            <thead><tr><th>Para</th><th>Preview</th><th></th></tr></thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </section>
+  <footer>
+    <a href="cv.pdf" class="btn btn-color" download><i class="bi bi-file-earmark-pdf"></i> Descargar CV (PDF)</a>
+    <p class="mt-3">© 2025 Carlos Veizaga | Todos los derechos reservados</p>
+  </footer>
 
-      <!-- Ejercicios -->
-      <section id="seccion-ejercicios" class="card hidden">
-        <h2>Set de ejercicios personalizados</h2>
-        <form id="form-ejercicio">
-          <label for="ej-titulo">Título del ejercicio</label>
-          <input id="ej-titulo" required />
-          <label for="ej-desc">Descripción</label>
-          <textarea id="ej-desc" required></textarea>
-          <div class="row" style="margin-top:8px">
-            <button class="btn" type="submit">Agregar ejercicio</button>
-            <button type="button" class="btn secondary" id="btn-export-ejercicios">Exportar ejercicios</button>
-          </div>
-        </form>
-        <div class="card" style="margin-top:12px">
-          <h3>Ejercicios guardados</h3>
-          <table id="tabla-ejercicios">
-            <thead><tr><th>Título</th><th></th></tr></thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </section>
-
-      <!-- Recordatorios -->
-      <section id="seccion-recordatorios" class="card hidden">
-        <h2>Recordatorios autogenerados/usuario</h2>
-        <form id="form-recordatorio">
-          <label for="rec-texto">Recordatorio</label>
-          <input id="rec-texto" required />
-          <label for="rec-frecuencia">Frecuencia (diario/semana/ocasional)</label>
-          <select id="rec-frecuencia"><option value="diario">Diario</option><option value="semanal">Semanal</option><option value="ocasional">Ocasional</option></select>
-          <div style="margin-top:8px">
-            <button class="btn" type="submit">Agregar recordatorio</button>
-            <button type="button" class="btn secondary" id="btn-export-recordatorios">Exportar recordatorios</button>
-          </div>
-        </form>
-        <div class="card" style="margin-top:12px">
-          <h3>Recordatorios guardados</h3>
-          <table id="tabla-recordatorios">
-            <thead><tr><th>Texto</th><th>Freq</th><th></th></tr></thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </section>
-
-      <!-- Recomendaciones -->
-      <section id="seccion-recomendaciones" class="card hidden">
-        <h2>Recomendaciones terapéuticas (general)</h2>
-        <div id="recomendaciones-list" class="card">
-          <h3>Recomendaciones iniciales</h3>
-          <ul id="lista-recomendaciones">
-            <!-- seeded by JS -->
-          </ul>
-        </div>
-        <div class="footer-note">Estas recomendaciones son orientativas y no sustituyen a un profesional.</div>
-      </section>
-
-    </main>
-  </div>
-
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    /**********************************************************************
-     * App: Autoanálisis Psicológico Profundo (Offline Single File)
-     * Autor: Generado por ChatGPT (comentarios en español)
-     * Objetivo: SPA offline para cuestionario, registros, cartas, ejercicios.
-     **********************************************************************/
+    function mostrar(id) {
+      document.querySelectorAll("section").forEach(s => s.classList.remove("active"));
+      const target = document.getElementById(id);
+      target.classList.add("active");
 
-    /* ---------------------------
-       Constantes y claves storage
-       --------------------------- */
-    const STORAGE_KEY = 'ap_autoanálisis_data_v1';
-    const STORAGE_QUEST = 'ap_cuestionario';
-    const STORAGE_REG = 'ap_registros';
-    const STORAGE_CARTAS = 'ap_cartas';
-    const STORAGE_EJERC = 'ap_ejercicios';
-    const STORAGE_REC = 'ap_recordatorios';
+      // calcular altura de header + navbar
+      const headerHeight = document.querySelector('header').offsetHeight;
+      const navbarHeight = document.querySelector('.navbar').offsetHeight;
+      const offsetTop = headerHeight + navbarHeight + 10;
 
-    /* ---------------------------
-       Helpers centrales (nombres consistentes)
-       --------------------------- */
-    function generarUUID(){
-      // Generador simple UUID v4 (no criptográfico) - util para IDs locales
-      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c){
-        const r = Math.random()*16|0, v = c==='x' ? r : (r&0x3|0x8);
-        return v.toString(16);
-      });
-    }
-
-    function guardarLocal(key, data){
-      try {
-        localStorage.setItem(key, JSON.stringify(data));
-      } catch (e){
-        alert('Error al guardar localmente: ' + e.message);
+      // cerrar menú en versión móvil
+      const navCollapse = document.querySelector('.navbar-collapse');
+      if (navCollapse.classList.contains('show')) {
+        new bootstrap.Collapse(navCollapse).toggle();
       }
     }
-
-    function leerLocal(key){
-      const raw = localStorage.getItem(key);
-      return raw ? JSON.parse(raw) : null;
-    }
-
-    function upsertArrayById(key, item){
-      const arr = leerLocal(key) || [];
-      const idx = arr.findIndex(x => x.id === item.id);
-      if(idx >= 0) arr[idx] = item; else arr.push(item);
-      guardarLocal(key, arr);
-      return arr;
-    }
-
-    function removeById(key, id){
-      let arr = leerLocal(key) || [];
-      arr = arr.filter(x => x.id !== id);
-      guardarLocal(key, arr);
-      return arr;
-    }
-
-    function exportJSON(filename = 'ap_data_export.json'){
-      const bundle = {
-        cuestionario: leerLocal(STORAGE_QUEST),
-        registros: leerLocal(STORAGE_REG),
-        cartas: leerLocal(STORAGE_CARTAS),
-        ejercicios: leerLocal(STORAGE_EJERC),
-        recordatorios: leerLocal(STORAGE_REC)
-      };
-      const blob = new Blob([JSON.stringify(bundle, null, 2)], {type:'application/json'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url; a.download = filename; document.body.appendChild(a); a.click();
-      a.remove(); URL.revokeObjectURL(url);
-    }
-
-    function importJSONFile(file){
-      const reader = new FileReader();
-      reader.onload = function(e){
-        try {
-          const data = JSON.parse(e.target.result);
-          if(data.cuestionario) guardarLocal(STORAGE_QUEST, data.cuestionario);
-          if(data.registros) guardarLocal(STORAGE_REG, data.registros);
-          if(data.cartas) guardarLocal(STORAGE_CARTAS, data.cartas);
-          if(data.ejercicios) guardarLocal(STORAGE_EJERC, data.ejercicios);
-          if(data.recordatorios) guardarLocal(STORAGE_REC, data.recordatorios);
-          alert('Importación completada.');
-          renderAll();
-        } catch(err){
-          alert('Archivo JSON inválido: ' + err.message);
-        }
-      };
-      reader.readAsText(file);
-    }
-
-    function exportCSVfromCuestionarios(){
-      const q = leerLocal(STORAGE_QUEST) || [];
-      if(q.length === 0){ alert('No hay cuestionarios guardados para exportar.'); return; }
-      // Convertir cada respuesta a una línea CSV
-      const headers = ['id','fechaGuardado'];
-      // generar columnas dinámicas según keys del primer objecto
-      const sample = q[0];
-      const keys = Object.keys(sample).filter(k=>k!=='id' && k!=='fechaGuardado');
-      const allHeaders = headers.concat(keys);
-      const lines = [allHeaders.join(',')];
-      q.forEach(item=>{
-        const row = [item.id, item.fechaGuardado || ''];
-        keys.forEach(k=>{
-          let v = item[k] === undefined ? '' : String(item[k]).replace(/"/g,'""');
-          if(v.includes(',')||v.includes('\n')) v = `"${v}"`;
-          row.push(v);
-        });
-        lines.push(row.join(','));
-      });
-      const blob = new Blob([lines.join('\n')], {type:'text/csv;charset=utf-8;'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url; a.download = 'cuestionarios_export.csv'; document.body.appendChild(a); a.click();
-      a.remove(); URL.revokeObjectURL(url);
-    }
-
-    /* ---------------------------
-       UI helpers y navegación
-       --------------------------- */
-    const secciones = {
-      cuestionario: document.getElementById('seccion-cuestionario'),
-      registro: document.getElementById('seccion-registro'),
-      carta: document.getElementById('seccion-carta'),
-      ejercicios: document.getElementById('seccion-ejercicios'),
-      recordatorios: document.getElementById('seccion-recordatorios'),
-      recomendaciones: document.getElementById('seccion-recomendaciones'),
-    };
-
-    function mostrarSeccion(name){
-      Object.keys(secciones).forEach(k=>{
-        if(k === name) secciones[k].classList.remove('hidden');
-        else secciones[k].classList.add('hidden');
-      });
-      // actualizar boton activo
-      document.querySelectorAll('.nav-btn').forEach(btn=>{
-        if(btn.dataset.section === name) btn.classList.add('active'); else btn.classList.remove('active');
-      });
-    }
-
-    document.querySelectorAll('.nav-btn[data-section]').forEach(btn=>{
-      btn.addEventListener('click', ()=> mostrarSeccion(btn.dataset.section));
-    });
-
-    // File import/export buttons
-    document.getElementById('btn-export-json').addEventListener('click', ()=> exportJSON());
-    document.getElementById('btn-import-json').addEventListener('click', ()=> document.getElementById('file-import').click());
-    document.getElementById('file-import').addEventListener('change', e=>{
-      const file = e.target.files[0]; if(!file) return;
-      importJSONFile(file);
-      e.target.value = '';
-    });
-
-    document.getElementById('btn-seed').addEventListener('click', ()=>{
-      if(confirm('Limpiar datos y crear seed demo?')) { seedData(true); renderAll(); alert('Seed creado.'); }
-    });
-
-    // export csv
-    document.getElementById('btn-export-csv').addEventListener('click', exportCSVfromCuestionarios);
-
-    /* ---------------------------
-       Inicializadores dinámicos del formulario
-       --------------------------- */
-
-    // MBTI 8 pares
-    const mbtiContainer = document.getElementById('mbti-container');
-    const mbtiPreguntas = [
-      "1. Prefiero energizarme en compañía de otros (A) / en soledad (B).",
-      "2. Me concentro en detalles concretos ahora (A) / Prefiero ver posibilidades (B).",
-      "3. Tomo decisiones priorizando la lógica (A) / los valores (B).",
-      "4. Prefiero un plan estructurado (A) / mantener opciones abiertas (B).",
-      "5. Prefiero conversaciones concretas (A) / discusiones abstractas (B).",
-      "6. Expreso lo que siento con facilidad (A) / Suelo guardar mis emociones (B).",
-      "7. Confío más en datos externos (A) / en intuiciones (B).",
-      "8. Prefiero terminar tareas antes de iniciar otras (A) / Multitasking (B)."
-    ];
-
-    function renderMBTI(){
-      mbtiContainer.innerHTML = '';
-      mbtiPreguntas.forEach((texto, idx)=>{
-        const i = idx+1;
-        const div = document.createElement('div');
-        div.className = 'card';
-        div.innerHTML = `
-          <label><strong>${texto}</strong></label>
-          <div class="row">
-            <div class="col">
-              <label class="label-inline">Elección</label>
-              <select id="q${i}" data-q="mbti" required>
-                <option value="">Selecciona</option>
-                <option value="A">A</option>
-                <option value="B">B</option>
-              </select>
-            </div>
-            <div class="col">
-              <label>Justificación (1-2 frases)</label>
-              <input type="text" id="q${i}j" placeholder="Breve justificación" />
-            </div>
-          </div>
-        `;
-        mbtiContainer.appendChild(div);
-      });
-    }
-
-    // BFI items 9..28 (20 ítems)
-    const bfiContainer = document.getElementById('bfi-container');
-    const bfiTexts = [
-      "9. Soy alguien que se preocupa por los demás.",
-      "10. Soy alguien que planifica y organiza con facilidad.",
-      "11. Soy alguien que se mantiene tranquilo/a en situaciones tensas.",
-      "12. Soy alguien curioso/a intelectualmente; me atraen nuevas ideas.",
-      "13. Soy alguien sociable y comunicativo/a.",
-      "14. Me resulta difícil perdonar ofensas pasadas.",
-      "15. A menudo termino lo que empiezo.",
-      "16. Me siento vulnerable a la ansiedad con frecuencia.",
-      "17. Disfruto de actividades artísticas o estéticas.",
-      "18. Prefiero la estabilidad a los cambios frecuentes.",
-      "19. Me cuesta expresar emociones profundas.",
-      "20. Me considero empático/a hacia el sufrimiento ajeno.",
-      "21. Tomo decisiones con rapidez cuando es necesario.",
-      "22. Siento culpa con facilidad por mis errores.",
-      "23. Busco retos intelectuales y debates.",
-      "24. Prefiero evitar conflictos directos.",
-      "25. Tengo estándares altos hacia mí mismo/a.",
-      "26. Me recupero con facilidad después de un mal momento.",
-      "27. Mis pensamientos a menudo van al pasado.",
-      "28. Soy flexible frente a nuevas rutinas."
-    ];
-
-    function renderBFI(){
-      bfiContainer.innerHTML = '';
-      bfiTexts.forEach((texto, idx)=>{
-        const i = idx + 9;
-        const div = document.createElement('div');
-        div.className = 'card';
-        div.innerHTML = `
-          <label><strong>${texto}</strong></label>
-          <div class="row">
-            <div class="col">
-              <select id="q${i}" required>
-                <option value="">Selecciona (1-5)</option>
-                <option value="1">1 - Totalmente en desacuerdo</option>
-                <option value="2">2</option>
-                <option value="3">3 - Neutral</option>
-                <option value="4">4</option>
-                <option value="5">5 - Totalmente de acuerdo</option>
-              </select>
-            </div>
-          </div>
-        `;
-        bfiContainer.appendChild(div);
-      });
-    }
-
-    // Inicializar MBTI + BFI
-    renderMBTI();
-    renderBFI();
-
-    /* ---------------------------
-       Manejo del formulario principal
-       --------------------------- */
-    const formCuestionario = document.getElementById('form-cuestionario');
-    const lastSavedSpan = document.getElementById('last-saved');
-    document.getElementById('btn-cargar-demo').addEventListener('click', ()=>{
-      if(confirm('Cargar respuestas demo (ejemplo) y guardar localmente?')) {
-        guardarCuestionario(seedCuestionario());
-        alert('Demo guardada.');
-        renderLastSavedInfo();
-      }
-    });
-
-    formCuestionario.addEventListener('submit', function(e){
-      e.preventDefault();
-      try {
-        const data = recogerCuestionarioDesdeForm();
-        // validaciones extra
-        const faltantes = validarCuestionario(data);
-        if(faltantes.length>0){
-          alert('Falta completar los siguientes campos: ' + faltantes.join(', '));
-          return;
-        }
-        guardarCuestionario(data);
-        alert('Cuestionario guardado localmente.');
-        renderLastSavedInfo();
-      } catch(err){
-        alert('Error al guardar cuestionario: ' + err.message);
-      }
-    });
-
-    function recogerCuestionarioDesdeForm(){
-      const obj = { id: generarUUID(), fechaGuardado: new Date().toISOString() };
-      // MBTI 1..8
-      for(let i=1;i<=8;i++){
-        const ele = document.getElementById('q'+i);
-        const just = document.getElementById('q'+i+'j');
-        obj['q'+i] = ele ? ele.value : '';
-        obj['q'+i+'j'] = just ? just.value : '';
-      }
-      // BFI 9..28
-      for(let i=9;i<=28;i++){
-        const el = document.getElementById('q'+i);
-        obj['q'+i] = el ? el.value : '';
-      }
-      // AAI 29..31
-      obj.q29 = document.getElementById('q29').value.trim();
-      obj.q30 = document.getElementById('q30').value.trim();
-      obj.q31 = document.getElementById('q31').value.trim();
-      // CTQ 32a..33
-      obj.q32a = document.getElementById('q32a').value;
-      obj.q32b = document.getElementById('q32b').value;
-      obj.q32c = document.getElementById('q32c').value;
-      obj.q32d = document.getElementById('q32d').value;
-      obj.q33 = document.getElementById('q33').value.trim();
-      // Disonancia 34..35
-      obj.q34 = document.getElementById('q34').value.trim();
-      obj.q35 = document.getElementById('q35').value.trim();
-      return obj;
-    }
-
-    function validarCuestionario(data){
-      const faltan = [];
-      // Requerir que todas las q1..q8 tengan valor A/B
-      for(let i=1;i<=8;i++){
-        if(!data['q'+i]) faltan.push('q'+i);
-      }
-      for(let i=9;i<=28;i++){
-        if(!data['q'+i]) faltan.push('q'+i);
-      }
-      ['q29','q30','q31','q32a','q32b','q32c','q32d','q34','q35'].forEach(k=>{
-        if(!data[k] && data[k] !== 0) faltan.push(k);
-      });
-      // longitud mínima para narrativas
-      if((data.q29 || '').length < 20) faltan.push('q29 (mín 20 caracteres)');
-      if((data.q30 || '').length < 20) faltan.push('q30 (mín 20 caracteres)');
-      if((data.q31 || '').length < 10) faltan.push('q31 (mín 10 caracteres)');
-      return faltan;
-    }
-
-    function guardarCuestionario(obj){
-      const arr = leerLocal(STORAGE_QUEST) || [];
-      arr.push(obj);
-      guardarLocal(STORAGE_QUEST, arr);
-    }
-
-    function seedCuestionario(){
-      // Datos semilla basados en ejemplo provisto por usuario
-      return {
-        id: generarUUID(),
-        fechaGuardado: new Date().toISOString(),
-        q1: 'A', q1j: '',
-        q2: 'B', q2j: '',
-        q3: 'A', q3j: '',
-        q4: 'A', q4j: '',
-        q5: 'A', q5j: '',
-        q6: 'B', q6j: '',
-        q7: 'A', q7j: '',
-        q8: 'A', q8j: '',
-        q9:'5',q10:'4',q11:'3',q12:'5',q13:'5',q14:'2',q15:'4',q16:'3',q17:'1',
-        q18:'5',q19:'5',q20:'5',q21:'4',q22:'3',q23:'5',q24:'5',q25:'5',q26:'4',q27:'5',q28:'3',
-        q29: 'Cuando era niño, aproximadamente a los 7 años, estaba jugando con mis amigos...',
-        q30: 'Un noche a mis 6 años de edad, mis padres salieron al cine y nos dejaron...',
-        q31: 'Actualmente no busco a nadie en momentos de estrés, pero...',
-        q32a:'4', q32b:'4', q32c:'0', q32d:'1', q33:'4',
-        q34: 'Creo que si me dicen que soy un flojo, lo cuestionaría...',
-        q35: 'No me gusta ir a los prostíbulos pero lo hago cuando puedo...'
-      };
-    }
-
-    function renderLastSavedInfo(){
-      const arr = leerLocal(STORAGE_QUEST) || [];
-      lastSavedSpan.textContent = arr.length ? arr[arr.length-1].fechaGuardado.split('T')[0] : '--';
-    }
-
-    /* ---------------------------
-       Registro somático manejo CRUD
-       --------------------------- */
-    const formRegistro = document.getElementById('form-registro');
-    const tablaRegistrosBody = document.querySelector('#tabla-registros tbody');
-
-    formRegistro.addEventListener('submit', function(e){
-      e.preventDefault();
-      const fecha = document.getElementById('registro-fecha').value;
-      const hora = document.getElementById('registro-hora').value;
-      const sens = document.getElementById('registro-sensacion').value.trim();
-      const emo = document.getElementById('registro-emocion').value.trim();
-      const accion = document.getElementById('registro-accion').value.trim();
-      if(!fecha || !hora || !sens || !emo || !accion){ alert('Completa todos los campos del registro.'); return; }
-      const item = { id: generarUUID(), fecha, hora, sensacion: sens, emocion: emo, accion, creado: new Date().toISOString() };
-      upsertArrayById(STORAGE_REG, item);
-      renderRegistros();
-      formRegistro.reset();
-    });
-
-    document.getElementById('btn-export-registros').addEventListener('click', ()=> {
-      const arr = leerLocal(STORAGE_REG) || [];
-      if(arr.length===0){ alert('No hay registros para exportar'); return; }
-      const blob = new Blob([JSON.stringify(arr, null, 2)], {type:'application/json'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a'); a.href = url; a.download = 'registros_somaticos.json'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
-    });
-
-    function renderRegistros(){
-      const arr = leerLocal(STORAGE_REG) || [];
-      tablaRegistrosBody.innerHTML = '';
-      arr.slice().reverse().forEach(r=>{
-        const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${r.fecha} ${r.hora}</td><td>${escapeHtml(r.emocion)}</td><td>${escapeHtml(r.accion)}</td>
-          <td><button class="small" data-id="${r.id}" data-action="del-reg">Eliminar</button></td>`;
-        tablaRegistrosBody.appendChild(tr);
-      });
-    }
-
-    document.querySelector('#tabla-registros tbody').addEventListener('click', (e)=>{
-      if(e.target.dataset.action === 'del-reg'){
-        const id = e.target.dataset.id;
-        if(confirm('Eliminar este registro?')) {
-          removeById(STORAGE_REG, id); renderRegistros();
-        }
-      }
-    });
-
-    /* ---------------------------
-       Cartas terapéuticas CRUD
-       --------------------------- */
-    const formCarta = document.getElementById('form-carta');
-    const tablaCartasBody = document.querySelector('#tabla-cartas tbody');
-
-    formCarta.addEventListener('submit', function(e){
-      e.preventDefault();
-      const para = document.getElementById('carta-para').value.trim();
-      const texto = document.getElementById('carta-texto').value.trim();
-      if(!para || !texto){ alert('Completa ambos campos de la carta.'); return; }
-      const item = { id: generarUUID(), para, texto, creado: new Date().toISOString() };
-      upsertArrayById(STORAGE_CARTAS, item);
-      renderCartas();
-      formCarta.reset();
-    });
-
-    document.getElementById('btn-export-cartas').addEventListener('click', ()=>{
-      const arr = leerLocal(STORAGE_CARTAS) || [];
-      if(arr.length===0){ alert('No hay cartas para exportar.'); return; }
-      const blob = new Blob([JSON.stringify(arr,null,2)], {type:'application/json'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a'); a.href = url; a.download = 'cartas_terapeuticas.json'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
-    });
-
-    function renderCartas(){
-      const arr = leerLocal(STORAGE_CARTAS) || [];
-      tablaCartasBody.innerHTML = '';
-      arr.slice().reverse().forEach(c=>{
-        const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${escapeHtml(c.para)}</td><td class="muted">${escapeHtml(c.texto).slice(0,120)}...</td>
-        <td><button class="small" data-id="${c.id}" data-action="ver-carta">Ver</button> <button class="small" data-id="${c.id}" data-action="del-carta">Eliminar</button></td>`;
-        tablaCartasBody.appendChild(tr);
-      });
-    }
-
-    document.querySelector('#tabla-cartas tbody').addEventListener('click', (e)=>{
-      const id = e.target.dataset.id;
-      if(e.target.dataset.action === 'del-carta'){ if(confirm('Eliminar carta?')) { removeById(STORAGE_CARTAS, id); renderCartas(); } }
-      if(e.target.dataset.action === 'ver-carta'){
-        const arr = leerLocal(STORAGE_CARTAS) || [];
-        const carta = arr.find(x=>x.id===id);
-        if(carta) alert('Para: ' + carta.para + '\n\n' + carta.texto);
-      }
-    });
-
-    /* ---------------------------
-       Ejercicios CRUD
-       --------------------------- */
-    const formEjercicio = document.getElementById('form-ejercicio');
-    const tablaEjerciciosBody = document.querySelector('#tabla-ejercicios tbody');
-
-    formEjercicio.addEventListener('submit', function(e){
-      e.preventDefault();
-      const titulo = document.getElementById('ej-titulo').value.trim();
-      const desc = document.getElementById('ej-desc').value.trim();
-      if(!titulo || !desc){ alert('Completa título y descripción del ejercicio.'); return; }
-      const item = { id: generarUUID(), titulo, desc, creado: new Date().toISOString() };
-      upsertArrayById(STORAGE_EJERC, item);
-      renderEjercicios();
-      formEjercicio.reset();
-    });
-
-    document.getElementById('btn-export-ejercicios').addEventListener('click', ()=>{
-      const arr = leerLocal(STORAGE_EJERC) || [];
-      if(arr.length===0){ alert('No hay ejercicios para exportar.'); return; }
-      const blob = new Blob([JSON.stringify(arr,null,2)], {type:'application/json'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a'); a.href = url; a.download = 'ejercicios.json'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
-    });
-
-    function renderEjercicios(){
-      const arr = leerLocal(STORAGE_EJERC) || [];
-      tablaEjerciciosBody.innerHTML = '';
-      arr.slice().reverse().forEach(ej=>{
-        const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${escapeHtml(ej.titulo)}</td>
-        <td><button class="small" data-id="${ej.id}" data-action="ver-ej">Ver</button> <button class="small" data-id="${ej.id}" data-action="del-ej">Eliminar</button></td>`;
-        tablaEjerciciosBody.appendChild(tr);
-      });
-    }
-
-    document.querySelector('#tabla-ejercicios tbody').addEventListener('click', (e)=>{
-      const id = e.target.dataset.id;
-      if(e.target.dataset.action === 'del-ej'){ if(confirm('Eliminar ejercicio?')) { removeById(STORAGE_EJERC, id); renderEjercicios(); } }
-      if(e.target.dataset.action === 'ver-ej'){ const arr = leerLocal(STORAGE_EJERC)||[]; const item = arr.find(x=>x.id===id); if(item) alert(item.titulo + '\n\n' + item.desc); }
-    });
-
-    /* ---------------------------
-       Recordatorios CRUD
-       --------------------------- */
-    const formRecord = document.getElementById('form-recordatorio');
-    const tablaRecordBody = document.querySelector('#tabla-recordatorios tbody');
-
-    formRecord.addEventListener('submit', function(e){
-      e.preventDefault();
-      const texto = document.getElementById('rec-texto').value.trim();
-      const freq = document.getElementById('rec-frecuencia').value;
-      if(!texto){ alert('Completa el texto del recordatorio.'); return; }
-      const item = { id: generarUUID(), texto, frecuencia: freq, creado: new Date().toISOString() };
-      upsertArrayById(STORAGE_REC, item);
-      renderRecordatorios();
-      formRecord.reset();
-    });
-
-    document.getElementById('btn-export-recordatorios').addEventListener('click', ()=>{
-      const arr = leerLocal(STORAGE_REC) || [];
-      if(arr.length===0){ alert('No hay recordatorios para exportar.'); return; }
-      const blob = new Blob([JSON.stringify(arr,null,2)], {type:'application/json'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a'); a.href = url; a.download = 'recordatorios.json'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
-    });
-
-    function renderRecordatorios(){
-      const arr = leerLocal(STORAGE_REC) || [];
-      tablaRecordBody.innerHTML = '';
-      arr.slice().reverse().forEach(r=>{
-        const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${escapeHtml(r.texto)}</td><td>${escapeHtml(r.frecuencia)}</td>
-        <td><button class="small" data-id="${r.id}" data-action="ver-r">Ver</button> <button class="small" data-id="${r.id}" data-action="del-r">Eliminar</button></td>`;
-        tablaRecordBody.appendChild(tr);
-      });
-    }
-
-    document.querySelector('#tabla-recordatorios tbody').addEventListener('click', (e)=>{
-      const id = e.target.dataset.id;
-      if(e.target.dataset.action === 'del-r'){ if(confirm('Eliminar recordatorio?')) { removeById(STORAGE_REC, id); renderRecordatorios(); } }
-      if(e.target.dataset.action === 'ver-r'){ const arr = leerLocal(STORAGE_REC)||[]; const item = arr.find(x=>x.id===id); if(item) alert(item.texto); }
-    });
-
-    /* ---------------------------
-       Render de recomendaciones estáticas (seed)
-       --------------------------- */
-    const listaRecomendaciones = [
-      "Practicar chequeo corporal diario de 3 minutos (respiración y escaneo corporal).",
-      "Escribir carta no enviada para procesar resentimientos (ej: a tu padre).",
-      "Ejercicios de vulnerabilidad progresiva en relaciones seguras (compartir pequeños recuerdos).",
-      "Trabajo somático si notas somatización (buscar terapeuta con experiencia en trauma).",
-      "Terapia EMDR o terapia focalizada en emociones si recuerdos se activan intensamente.",
-      "Grupo de trabajo sobre masculinidad consciente para reconfigurar modelos paternos."
-    ];
-    function renderRecomendaciones(){
-      const ul = document.getElementById('lista-recomendaciones');
-      ul.innerHTML = '';
-      listaRecomendaciones.forEach(r=>{
-        const li = document.createElement('li'); li.textContent = r; ul.appendChild(li);
-      });
-    }
-
-    /* ---------------------------
-       Utilitarios y seguridad
-       --------------------------- */
-    // Escapar texto en tablas
-    function escapeHtml(str){
-      if(!str) return '';
-      return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-    }
-
-    /* ---------------------------
-       Seed y renderAll
-       --------------------------- */
-    function seedData(overwrite = false){
-      // si overwrite, limpiar todo
-      if(overwrite){
-        localStorage.removeItem(STORAGE_QUEST);
-        localStorage.removeItem(STORAGE_REG);
-        localStorage.removeItem(STORAGE_CARTAS);
-        localStorage.removeItem(STORAGE_EJERC);
-        localStorage.removeItem(STORAGE_REC);
-      }
-      // crear seed si no existe
-      if(!leerLocal(STORAGE_QUEST)) guardarLocal(STORAGE_QUEST, [seedCuestionario()]);
-      if(!leerLocal(STORAGE_REG)) guardarLocal(STORAGE_REG, [
-        { id: generarUUID(), fecha: new Date().toISOString().split('T')[0], hora:'10:00', sensacion:'Tensión en pecho', emocion:'Ansiedad', accion:'Respiración 3 min', creado: new Date().toISOString() }
-      ]);
-      if(!leerLocal(STORAGE_CARTAS)) guardarLocal(STORAGE_CARTAS, [
-        { id: generarUUID(), para:'Padre', texto:'(Carta demo) Quiero decirte que...', creado: new Date().toISOString() }
-      ]);
-      if(!leerLocal(STORAGE_EJERC)) guardarLocal(STORAGE_EJERC, [
-        { id: generarUUID(), titulo:'Chequeo corporal 3 pasos', desc:'Detente, respira 3 veces, escanea pies a cabeza y etiqueta la sensación.', creado: new Date().toISOString() }
-      ]);
-      if(!leerLocal(STORAGE_REC)) guardarLocal(STORAGE_REC, [
-        { id: generarUUID(), texto:'Recordar: respirar antes de responder', frecuencia:'diario', creado: new Date().toISOString() }
-      ]);
-    }
-
-    function renderAll(){
-      renderLastSavedInfo();
-      renderRegistros();
-      renderCartas();
-      renderEjercicios();
-      renderRecordatorios();
-      renderRecomendaciones();
-    }
-
-    /* ---------------------------
-       Inicialización
-       --------------------------- */
-    (function init(){
-      // Crear seed si no existe
-      if(!leerLocal(STORAGE_QUEST)) seedData(false);
-      renderAll();
-      // Mostrar seccion inicial
-      mostrarSeccion('cuestionario');
-
-      // Botón exportar actual (guardar el último cuestionario visible)
-      document.getElementById('btn-save-current').addEventListener('click', ()=>{
-        try {
-          const data = recogerCuestionarioDesdeForm();
-          const faltantes = validarCuestionario(data);
-          if(faltantes.length>0){ alert('Falta completar: ' + faltantes.join(', ')); return; }
-          guardarCuestionario(data);
-          alert('Guardado.');
-          renderLastSavedInfo();
-        } catch(err){ alert('Error: '+err.message); }
-      });
-
-      // Export CSV botón superior (otra referencia)
-      document.getElementById('btn-export-csv').addEventListener('click', exportCSVfromCuestionarios);
-
-      // Import JSON desde boton
-      document.getElementById('btn-import-json').addEventListener('click', ()=> document.getElementById('file-import').click());
-
-      // Guardar demo del seed inicial
-      // Ya implementado en botón dentro del formulario
-
-    })();
-
-    /* ---------------------------
-       Pequeña nota de calidad
-       - Todas las funciones están comentadas.
-       - Variables y funciones usan nombres consistentes en español.
-       - Validaciones básicas implementadas.
-       - Manejo de errores con alertas claras.
-       --------------------------- */
-
   </script>
 </body>
 </html>
