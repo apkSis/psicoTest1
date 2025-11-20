@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>⚡ Test de Habilidades MBTI - ¡20 Preguntas!</title>
+    <title>⚡ Test de Ilusión Óptica - ¡CHARADAS!</title>
     <style>
         /* Variables y Estilos Base */
         :root {
-            --bg-color: #1a004b; 
-            --card-bg-color: rgba(30, 0, 70, 0.8);
-            --border-color: #7f00ff;
+            --bg-color: #0d0d0d; 
+            --card-bg-color: rgba(255, 255, 255, 0.1);
+            --border-color: #00ffff; /* Cian brillante */
             --text-color: #f9fafb;
             --subtitle-color: #d1d5db;
-            --primary-purple: #9b5cf6;
-            --primary-pink: #ec4899;
+            --primary-color: #00ffff;
+            --secondary-color: #ff00ff; /* Magenta */
             --timer-start-color: #4ade80; 
             --timer-end-color: #ff3333; 
-            --answer-color-hover: #ffcc00; 
+            --alert-color: #ffeb3b; /* Amarillo de alerta */
         }
 
         * {
@@ -28,282 +28,270 @@
         body {
             font-family: 'Arial', sans-serif;
             background-color: var(--bg-color);
-            background-image: linear-gradient(135deg, var(--bg-color) 0%, #3a006f 100%);
             color: var(--text-color);
             display: flex;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            padding: 1rem;
+            padding: 0;
             text-align: center;
+            position: relative;
         }
 
         .container {
             width: 100%;
-            max-width: 700px;
+            height: 100vh;
             position: relative;
-        }
-
-        .screen {
-            display: none;
-            animation: fadeIn 0.5s ease-in-out;
-        }
-
-        .screen.active {
-            display: block;
-        }
-
-        .card {
-            background-color: var(--card-bg-color);
-            backdrop-filter: blur(5px);
-            border: 2px solid var(--border-color);
-            border-radius: 1.5rem;
-            padding: 2rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            /* Necesario para la exportación PDF */
-            page-break-inside: avoid; 
-        }
-
-        /* Estilos de Elementos Comunes */
-        .title { font-size: 2.5rem; font-weight: 800; background: linear-gradient(to right, var(--primary-purple), var(--primary-pink)); -webkit-background-clip: text; background-clip: text; color: transparent; margin-bottom: 0.5rem; }
-        .subtitle { font-size: 1.25rem; color: var(--subtitle-color); margin-bottom: 2rem; }
-        .name-input { width: 100%; padding: 0.75rem 1rem; font-size: 1.125rem; background-color: #374151; border: 1px solid var(--border-color); border-radius: 0.5rem; color: var(--text-color); margin-bottom: 1.5rem; }
-        .btn { width: 100%; padding: 0.75rem 1.5rem; font-size: 1.25rem; font-weight: 700; color: white; background-image: linear-gradient(to right, var(--primary-purple), var(--primary-pink)); border: none; border-radius: 0.5rem; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4); text-transform: uppercase; }
-        .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5); }
-        .question-text { font-size: 1.75rem; font-weight: 700; margin-bottom: 1.5rem; color: var(--answer-color-hover); text-shadow: 0 0 5px rgba(0, 0, 0, 0.5); }
-
-
-        /* Temporizador y Blink */
-        .quiz-header { margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; }
-        .question-counter { font-size: 1rem; font-weight: 700; color: var(--primary-purple); margin-bottom: 0.5rem; transition: color 0.2s ease-in-out; }
-        @keyframes blink-animation { to { color: var(--timer-end-color); text-shadow: 0 0 10px var(--timer-end-color); } }
-        .blinking { animation: blink-animation 0.3s steps(2, start) infinite alternate; }
-        .timer-bar-container { width: 100%; height: 12px; background-color: #374151; border-radius: 6px; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3); }
-        .timer-bar { height: 100%; width: 100%; background-image: linear-gradient(to right, var(--timer-start-color), var(--timer-end-color)); border-radius: 6px; transition: width 0.1s linear; }
-
-        /* Cuadrícula 1x2 (Ruleta) y Imágenes Responsivas */
-        .answers-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr; /* 1x2 Fija */
-            gap: 1.25rem;
-        }
-
-        .answer-card {
-            position: relative;
-            border-radius: 1rem;
-            overflow: hidden;
-            cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-            aspect-ratio: 1 / 1; /* Cuadrado (Ruleta) */
             display: flex;
             flex-direction: column;
-            justify-content: flex-end;
-            padding: 1rem;
-            background-color: #374151;
-            border: 3px solid transparent;
+            justify-content: space-between;
+            overflow: hidden; /* Para que la imagen cubra todo */
         }
-        .answer-card:hover { transform: scale(1.03); box-shadow: 0 0 20px var(--answer-color-hover), 0 0 10px rgba(255, 255, 255, 0.5); border-color: var(--answer-color-hover); }
 
-        .answer-image {
+        /* IMAGEN DE FONDO (Full Page Image) */
+        #quiz-image {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            object-fit: cover;
-            opacity: 0.7;
-            transition: transform 0.5s ease;
+            object-fit: cover; /* Asegura que la imagen cubra todo el contenedor */
+            filter: brightness(0.7); /* Oscurecer un poco para legibilidad */
+            transition: filter 0.5s ease-in-out;
+            z-index: 1;
         }
-        .answer-card:hover .answer-image { transform: scale(1.05); opacity: 1; }
-
-        .answer-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 70%); z-index: 1; }
+        .dim-image {
+             filter: brightness(0.3) blur(2px) !important; /* Oscurecer y desenfocar para la retroalimentación */
+        }
         
-        .answer-text {
+        /* Contenedores de Interfaz (Encima de la imagen) */
+        .header-overlay, .buttons-container, #feedback-overlay {
             position: relative;
-            z-index: 2;
-            font-size: 0.95rem; 
-            font-weight: 600;
+            z-index: 10;
+        }
+
+        /* Encabezado (Contador y Título) */
+        .header-overlay {
+            padding: 1rem;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0));
+        }
+
+        .question-counter { font-size: 1.2rem; font-weight: 700; color: var(--primary-color); margin-bottom: 0.5rem; transition: color 0.2s ease-in-out; }
+        .question-text { font-size: 0.9rem; color: var(--subtitle-color); }
+        
+        /* Temporizador */
+        @keyframes blink-animation { to { color: var(--timer-end-color); text-shadow: 0 0 10px var(--timer-end-color); } }
+        .blinking { animation: blink-animation 0.3s steps(2, start) infinite alternate; }
+
+        .timer-bar-container { width: 90%; max-width: 400px; height: 8px; background-color: rgba(255, 255, 255, 0.2); border-radius: 4px; overflow: hidden; margin: 0.5rem auto 0; }
+        .timer-bar { height: 100%; width: 100%; background-image: linear-gradient(to right, var(--timer-start-color), var(--timer-end-color)); border-radius: 4px; transition: width 0.1s linear; }
+
+        /* Botones de Respuesta (Abajo) */
+        .buttons-container {
+            width: 100%;
+            padding: 1rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0));
+        }
+
+        .btn {
+            padding: 1rem 1.5rem;
+            font-size: 1.1rem;
+            font-weight: 700;
             color: white;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 1);
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 2px solid var(--primary-color);
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+        }
+        .btn:hover:not(.disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 0 15px var(--primary-color);
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        .btn.disabled { opacity: 0.5; cursor: default; }
+        
+        /* --- Overlay de Retroalimentación (Feedback) --- */
+        #feedback-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none; /* Inicialmente oculto */
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+            cursor: pointer; /* Para el click-to-skip */
+        }
+
+        .feedback-box {
+            background-color: rgba(0, 0, 0, 0.9); /* Fondo neutro oscuro para legibilidad */
+            color: var(--text-color);
+            padding: 2rem;
+            margin: 1rem;
+            border-radius: 1rem;
+            border: 3px solid var(--secondary-color);
+            max-width: 90%;
+            box-shadow: 0 0 30px rgba(255, 0, 255, 0.5);
+            animation: fadeInScale 0.4s ease-out;
+        }
+
+        .feedback-box h3 { font-size: 1.5rem; color: var(--primary-color); margin-bottom: 1rem; }
+        .feedback-box p { 
+            font-size: 1.1rem; 
+            line-height: 1.5; 
+            margin-bottom: 1rem;
             text-align: left;
+            border-left: 3px solid var(--secondary-color);
+            padding-left: 10px;
         }
+        .feedback-score { font-size: 1.5rem; font-weight: 700; color: var(--alert-color); }
+        .tts-hint { margin-top: 1.5rem; font-size: 0.9rem; color: var(--subtitle-color); }
 
-        /* Estilos de Resultado MBTI */
-        #personality-name { font-weight: 800; font-size: 3rem; color: var(--primary-pink); margin-top: 1rem;}
-        .result-description-box { background-color: rgba(17, 24, 39, 0.7); padding: 1.5rem; border-radius: 0.75rem; margin-bottom: 1.5rem; text-align: left; font-size: 1.125rem; border: 1px solid var(--border-color); }
-        .dichotomy-result { margin-top: 1rem; border-top: 1px solid #4a4a4a; padding-top: 1rem; text-align: left; }
-        .dichotomy-result h4 { font-size: 1.15rem; color: var(--primary-purple); margin-bottom: 0.25rem; }
-        .dichotomy-result p { font-size: 0.95rem; color: var(--subtitle-color); }
-        .dimension-score { font-weight: 700; color: var(--answer-color-hover); }
+        /* Pantallas Finales/Iniciales */
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 30;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        .screen.active { display: flex; }
+        .intro-card, .result-card {
+            background-color: rgba(30, 0, 70, 0.9);
+            border: 2px solid var(--border-color);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            max-width: 90%;
+            width: 500px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        .title { font-size: 2.5rem; font-weight: 800; background: linear-gradient(to right, var(--primary-color), var(--secondary-color)); -webkit-background-clip: text; background-clip: text; color: transparent; margin-bottom: 0.5rem; }
+        .score-display { font-size: 4rem; font-weight: 800; color: var(--primary-color); text-shadow: 0 0 15px var(--primary-color); margin-top: 1rem; }
 
-        /* MEDIA QUERY: Mobile-First para optimizar texto y cuadrícula */
-        @media (max-width: 480px) {
-            .card { padding: 1rem; }
+        /* Media Query para móvil */
+        @media (max-width: 600px) {
             .title { font-size: 1.8rem; }
-            .question-text { font-size: 1.25rem; margin-bottom: 1rem; }
-            
-            .answers-grid {
-                grid-template-columns: 1fr 1fr; /* Mantiene 1x2 Ruleta */
-                gap: 0.5rem;
-            }
-            .answer-card {
-                aspect-ratio: 1 / 1; 
-                padding: 0.5rem; 
-            }
-            .answer-text {
-                font-size: 0.55rem; /* Texto muy pequeño para no estorbar la imagen */
-                line-height: 1.2;
-            }
-            #personality-name { font-size: 2.5rem; }
+            .feedback-box { padding: 1rem; }
+            .feedback-box h3 { font-size: 1.2rem; }
+            .feedback-box p { font-size: 0.9rem; }
+            .btn { font-size: 1rem; padding: 0.8rem 1rem; }
+            .buttons-container { gap: 0.5rem; }
         }
 
-        /* ESTILOS PARA LA IMPRESIÓN (PDF) */
-        @media print {
-            body {
-                background: white;
-                color: black;
-                display: block;
-                padding: 0;
-            }
-            .container { max-width: 100%; }
-            .card {
-                background: white;
-                color: black;
-                border: 1px solid #ccc;
-                box-shadow: none;
-                padding: 1rem;
-                margin-bottom: 1rem;
-                /* Oculta la sombra de la caja que a veces genera un borde feo en PDF */
-                box-shadow: none; 
-            }
-            /* Fuerzar colores en impresión (importante para títulos) */
-            .title, #personality-name, .dimension-score {
-                color: black !important;
-                -webkit-print-color-adjust: exact;
-                color-adjust: exact;
-                background: none;
-            }
-            /* Ocultar elementos de interacción */
-            .btn, #start-screen, #quiz-screen, .quiz-header, .name-input { display: none; }
-            #result-screen { display: block; }
-            .result-description-box { background: #f0f0f0; border: 1px solid #ccc; }
-        }
-
-        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        /* Animaciones */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeInScale { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
     </style>
 </head>
 <body>
 
     <main class="container">
         <div id="start-screen" class="screen active">
-            <div class="card">
-                <h1 class="title">TEST DE HABILIDADES MBTI</h1>
-                <p class="subtitle">Descubre tus preferencias cognitivas en 20 preguntas ultrarrápidas. ¡**5 segundos** por pregunta!</p>
+            <div class="intro-card">
+                <h1 class="title">CHARADAS: ILUSIÓN ÓPTICA</h1>
+                <p class="subtitle">¡Descubre qué dice tu visión! Tendrás **10 segundos** para elegir tu primera percepción. El tiempo es crucial. </p>
                 <form id="start-form">
                     <input type="text" id="name-input" placeholder="Ingresa tu nombre de Jugador" class="name-input" autocomplete="off" required/>
-                    <button type="submit" class="btn">¡EMPEZAR DESAFÍO!</button>
+                    <button type="submit" class="btn">INICIAR DESAFÍO VISUAL</button>
                 </form>
             </div>
         </div>
 
         <div id="quiz-screen" class="screen">
-            <div class="card">
-                <div class="quiz-header">
-                    <p id="question-counter" class="question-counter"></p>
-                    <div class="timer-bar-container">
-                        <div id="timer-bar" class="timer-bar"></div>
-                    </div>
+            <img id="quiz-image" src="" alt="Ilusión Óptica" />
+            
+            <div class="header-overlay">
+                <p id="question-counter" class="question-counter"></p>
+                <p id="question-text" class="question-text">¿Qué ves primero en esta imagen?</p>
+                <div class="timer-bar-container">
+                    <div id="timer-bar" class="timer-bar"></div>
                 </div>
-                <h2 id="question-text" class="question-text"></h2>
-                <div id="answers-grid" class="answers-grid">
-                    </div>
+            </div>
+
+            <div id="feedback-overlay" style="display: none;">
+                <div class="feedback-box">
+                    <h3 id="feedback-title"></h3>
+                    <p id="feedback-desc-a"></p>
+                    <p id="feedback-desc-b"></p>
+                    <p class="feedback-score">Puntuación Actual: <span id="current-score-display">0</span></p>
+                    <p class="tts-hint">Toca o haz click para escuchar el texto y continuar...</p>
+                </div>
+            </div>
+
+            <div id="buttons-container" class="buttons-container">
+                <button id="btn-a" class="btn">Respuesta: A</button>
+                <button id="btn-b" class="btn">Respuesta: B</button>
             </div>
         </div>
 
         <div id="result-screen" class="screen">
-            <div class="card">
-                <p id="congrats-message" class="subtitle"></p>
-                <h2 class="result-title">Tu Perfil de Habilidades MBTI es:</h2>
-                <span id="personality-name"></span>
-                <p class="final-score">Basado en el análisis de 20 preferencias.</p>
-
-                <div class="result-description-box">
-                    <p id="personality-description"></p>
-                </div>
-
-                <div id="dichotomy-results">
-                    </div>
-                
-                <button id="export-pdf-btn" class="btn" style="margin-bottom: 1rem;">Exportar Informe a PDF</button>
-                <button id="restart-btn" class="btn">Jugar de Nuevo</button>
+            <div class="result-card">
+                <h1 class="title">FIN DEL TEST</h1>
+                <p class="subtitle" id="final-congrats"></p>
+                <p class="subtitle">Puntuación Acumulada Final:</p>
+                <div id="final-score-display" class="score-display">0</div>
+                <button id="restart-btn" class="btn" style="margin-top: 2rem;">REINICIAR</button>
             </div>
         </div>
     </main>
 
     <script>
     document.addEventListener('DOMContentLoaded', () => {
-        // =================================================================================
-        // DATOS DEL CUESTIONARIO (20 Preguntas A/B - Basado en archivos adjuntos)
-        // La propiedad 'dimension' rastrea la letra MBTI (E, I, S, N, T, F, J, P).
-        // =================================================================================
-        const QUIZ_QUESTIONS = [
-            // Extraversión (E) vs. Introversión (I)
-            { q: 1, text: "Cuando tienes tiempo libre, prefieres:", answers: [{ text: "A) Estar con gente, compartir ideas o actividades.", dimension: 'E' }, { text: "B) Estar solo, reflexionando o haciendo algo personal.", dimension: 'I' }] },
-            { q: 2, text: "En reuniones o grupos grandes:", answers: [{ text: "A) Hablas fácilmente y te energiza.", dimension: 'E' }, { text: "B) Te agota y prefieres escuchar más.", dimension: 'I' }] },
-            { q: 3, text: "Cuando surge un problema:", answers: [{ text: "A) Lo comentas con otros para aclararlo.", dimension: 'E' }, { text: "B) Lo piensas solo hasta tener claridad.", dimension: 'I' }] },
-            { q: 4, text: "Las personas te describen como:", answers: [{ text: "A) Sociable, abierto, expresivo.", dimension: 'E' }, { text: "B) Reservado, reflexivo, tranquilo.", dimension: 'I' }] },
-            { q: 5, text: "Cuando te relacionas con extraños:", answers: [{ text: "A) Es fácil iniciar una conversación y hacer amigos.", dimension: 'E' }, { text: "B) Prefieres que se te acerquen a iniciar el contacto.", dimension: 'I' }] },
-            // Sensación (S) vs. Intuición (N)
-            { q: 6, text: "Prefieres trabajar con información:", answers: [{ text: "A) Concreta, datos reales, paso a paso.", dimension: 'S' }, { text: "B) Ideas, patrones, conexiones y posibilidades.", dimension: 'N' }] },
-            { q: 7, text: "Cuando aprendes algo nuevo:", answers: [{ text: "A) Necesitas ejemplos y práctica.", dimension: 'S' }, { text: "B) Captas el concepto general rápidamente.", dimension: 'N' }] },
-            { q: 8, text: "En conversaciones, tiendes a:", answers: [{ text: "A) Hablar de hechos o experiencias.", dimension: 'S' }, { text: "B) Hablar de teorías, proyectos o futuro.", dimension: 'N' }] },
-            { q: 9, text: "Al resolver problemas:", answers: [{ text: "A) Te basas en lo que ya ha funcionado.", dimension: 'S' }, { text: "B) Imaginas nuevas formas o alternativas.", dimension: 'N' }] },
-            { q: 10, text: "Tu mente tiende a:", answers: [{ text: "A) Analizar cómo funcionan las cosas.", dimension: 'S' }, { text: "B) Imaginar cómo podrían ser diferentes.", dimension: 'N' }] },
-            // Pensamiento (T) vs. Sentimiento (F)
-            { q: 11, text: "Cuando tomas decisiones:", answers: [{ text: "A) Analizas la lógica y las consecuencias.", dimension: 'T' }, { text: "B) Consideras el impacto emocional o humano.", dimension: 'F' }] },
-            { q: 12, text: "En conflictos, tiendes a:", answers: [{ text: "A) Ser objetivo y buscar justicia.", dimension: 'T' }, { text: "B) Ser empático y buscar armonía.", dimension: 'F' }] },
-            { q: 13, text: "Tus compañeros te describen como:", answers: [{ text: "A) Directo, racional, algo crítico.", dimension: 'T' }, { text: "B) Amable, considerado, conciliador.", dimension: 'F' }] },
-            { q: 14, text: "Al evaluar un trabajo o idea:", answers: [{ text: "A) Te enfocas en la precisión y eficiencia.", dimension: 'T' }, { text: "B) Te enfocas en la motivación y el bienestar de todos.", dimension: 'F' }] },
-            { q: 15, text: "Cuando fallas o te equivocas:", answers: [{ text: "A) Buscas el error lógico para corregirlo.", dimension: 'T' }, { text: "B) Analizas tus emociones y aprendes de la experiencia.", dimension: 'F' }] },
-            // Juicio (J) vs. Percepción (P)
-            { q: 16, text: "Te sientes más cómodo cuando:", answers: [{ text: "A) Todo está planificado y decidido.", dimension: 'J' }, { text: "B) Hay flexibilidad y opciones abiertas.", dimension: 'P' }] },
-            { q: 17, text: "En tu espacio de trabajo:", answers: [{ text: "A) Orden, estructura y rutina.", dimension: 'J' }, { text: "B) Espontaneidad, adaptabilidad y algo de caos.", dimension: 'P' }] },
-            { q: 18, text: "En proyectos largos:", answers: [{ text: "A) Sigues un plan y cumples fechas.", dimension: 'J' }, { text: "B) Prefieres fluir según las circunstancias.", dimension: 'P' }] },
-            { q: 19, text: "Cuando algo cambia inesperadamente:", answers: [{ text: "A) Te incomoda y tratas de volver al plan.", dimension: 'J' }, { text: "B) Te adaptas y ves nuevas oportunidades.", dimension: 'P' }] },
-            { q: 20, text: "En liderazgo:", answers: [{ text: "A) Estructuras, defines metas y controlas resultados.", dimension: 'J' }, { text: "B) Inspiras, motivas y guías por visión.", dimension: 'P' }] },
-        ];
-
-        // Descripciones MBTI (Ejemplo de 16 tipos - Simplificado)
-        const MBTI_DESCRIPTIONS = {
-            'ESTJ': { name: 'Ejecutivo', role: 'El Supervisor', description: 'Líder natural, eficiente y estructurado. Tu habilidad es organizar sistemas y asegurar que las metas se cumplan con disciplina.' },
-            'ESTP': { name: 'Emprendedor', role: 'El Dinamista', description: 'Explorador audaz y enfocado en la acción. Tienes habilidad para improvisar y resolver problemas prácticos en el momento con energía.' },
-            'ESFJ': { name: 'Cónsul', role: 'El Proveedor', description: 'Social y afectuoso. Tu habilidad es crear armonía y cohesión en el grupo, asegurando que las necesidades de los demás sean atendidas.' },
-            'ESFP': { name: 'Animador', role: 'El Artista', description: 'Vive el momento con entusiasmo. Tu habilidad es usar tu carisma para motivar y hacer que cualquier actividad sea divertida e inspiradora.' },
-            'ENTJ': { name: 'Comandante', role: 'El Líder', description: 'Estratega con visión a largo plazo. Tu habilidad es planificar, dirigir y motivar equipos para lograr objetivos ambiciosos de forma eficiente.' },
-            'ENTP': { name: 'Debatiente', role: 'El Inventor', description: 'Pensador curioso y desafiante. Tu habilidad es generar ideas innovadoras, ver posibilidades y debatir para mejorar conceptos.' },
-            'ENFJ': { name: 'Protagonista', role: 'El Maestro', description: 'Líder carismático e inspirador. Tu habilidad es guiar a otros hacia su crecimiento personal y defender causas justas con pasión.' },
-            'ENFP': { name: 'Activista', role: 'El Campeón', description: 'Espíritu libre, creativo y entusiasta. Tu habilidad es inspirar a través de la autenticidad y encontrar significado y posibilidades en todo.' },
-            'ISTJ': { name: 'Logista', role: 'El Inspector', description: 'Práctico, fiable y responsable. Tu habilidad es la precisión, el deber y la estructura, siendo el pilar de la estabilidad.' },
-            'ISTP': { name: 'Virtuoso', role: 'El Artesano', description: 'Observador lógico y pragmático. Tu habilidad es resolver problemas con tus manos y analizar sistemas complejos eficientemente.' },
-            'ISFJ': { name: 'Defensor', role: 'El Protector', description: 'Cálido, dedicado y protector. Tu habilidad es la lealtad y el cuidado, prestando atención a los detalles para proteger a los demás.' },
-            'ISFP': { name: 'Aventurero', role: 'El Compositor', description: 'Artista sensible y flexible. Tu habilidad es la expresión personal y la creatividad, viviendo el momento con autenticidad.' },
-            'INTJ': { name: 'Arquitecto', role: 'El Estratega', description: 'Planificador brillante y lógico. Tu habilidad es la visión analítica, creando estrategias maestras para alcanzar metas complejas.' },
-            'INTP': { name: 'Lógico', role: 'El Pensador', description: 'Analítico y teórico. Tu habilidad es desarmar ideas para ver cómo funcionan, buscando la verdad a través de la lógica pura.' },
-            'INFJ': { name: 'Abogado', role: 'El Consejero', description: 'Idealista, reservado y profundo. Tu habilidad es la visión y la inspiración, guiando a otros hacia su potencial.' },
-            'INFP': { name: 'Mediador', role: 'El Idealista', description: 'Soñador amable y sensible. Tu habilidad es la empatía y la búsqueda de significado, buscando la bondad en todo.' },
-        };
-
-        const QUESTION_TIMER_SECONDS = 5; 
         
         // =================================================================================
-        // LÓGICA DE LA APLICACIÓN Y CÁLCULO MBTI
+        // DATOS DEL CUESTIONARIO (20 Ilusiones Ópticas, +1/-1)
+        // Basado en el patrón de tu archivo "Tabla Seleccion Imagen Acertada.xlsx - Hoja1.csv"
+        // He creado 20 preguntas de ejemplo con los puntajes y descripciones.
         // =================================================================================
+        const QUIZ_QUESTIONS = [
+            { id: 1, image: "Imagen1.PNG", optionA: "Opción A: +1 punto", optionB: "Opción B: -1 punto", scoreA: 1, scoreB: -1, descA: "Si dijiste la primera opción, eres: Reflexivo y analítico", descB: "Si dijiste la segunda opción, eres: Expresivo y sincero" },
+            { id: 2, image: "Imagen2.PNG", optionA: "Opción A: +1 punto", optionB: "Opción B: -1 punto", scoreA: 1, scoreB: -1, descA: "Si viste el primer patrón, eres: Orientado a los detalles.", descB: "Si viste el segundo patrón, eres: Visionario e intuitivo" },
+            { id: 3, image: "Imagen3.PNG", optionA: "Opción A: +1 punto", optionB: "Opción B: -1 punto", scoreA: 1, scoreB: -1, descA: "Tu mente capta la imagen global y resuelve problemas rápidamente.", descB: "Eres muy bueno reconociendo rostros y tienes alta sensibilidad social." },
+            { id: 4, image: "Imagen4.PNG", optionA: "Opción A: +1 punto", optionB: "Opción B: -1 punto", scoreA: 1, scoreB: -1, descA: "Tienes una visión general y estratégica.", descB: "Tienes una visión detallada y práctica." },
+            { id: 5, image: "Imagen5.PNG", optionA: "Opción A: +1 punto", optionB: "Opción B: -1 punto", scoreA: 1, scoreB: -1, descA: "Tu cerebro prioriza la estructura y el orden.", descB: "Tu cerebro prioriza la fluidez y el movimiento." },
+            { id: 6, image: "Imagen6.PNG", optionA: "Opción A: +1 punto", optionB: "Opción B: -1 punto", scoreA: 1, scoreB: -1, descA: "Tu personalidad tiende a la lógica y la objetividad.", descB: "Tu personalidad tiende a la emoción y la empatía." },
+            { id: 7, image: "Imagen7.PNG", optionA: "Opción A: +1 punto", optionB: "Opción B: -1 punto", scoreA: 1, scoreB: -1, descA: "Buscas la armonía y evitas el conflicto.", descB: "Buscas la verdad, aunque genere tensión." },
+            { id: 8, image: "Imagen8.PNG", optionA: "Opción A: +1 punto", optionB: "Opción B: -1 punto", scoreA: 1, scoreB: -1, descA: "Vives en el presente y te concentras en lo práctico.", descB: "Siempre estás pensando en el futuro y las posibilidades." },
+            { id: 9, image: "Imagen9.PNG", optionA: "Opción A: +1 punto", optionB: "Opción B: -1 punto", scoreA: 1, scoreB: -1, descA: "Tu mente es rápida para categorizar y planificar.", descB: "Tu mente es flexible y le gusta improvisar." },
+            { id: 10, image: "Imagen10.PNG", optionA: "Opción A: +1 punto", optionB: "Opción B: -1 punto", scoreA: 1, scoreB: -1, descA: "Eres un líder nato, orientado a los resultados.", descB: "Eres un seguidor leal, orientado al apoyo." },
+            { id: 11, image: "Imagen11.PNG", optionA: "Opción A: +1 punto", optionB: "Opción B: -1 punto", scoreA: 1, scoreB: -1, descA: "Tu atención es selectiva, te enfocas en un punto clave.", descB: "Tu atención es amplia, procesas el panorama completo." },
+            { id: 12, image: "Imagen12.PNG", optionA: "Opción A: +1 punto", optionB: "Opción B: -1 punto", scoreA: 1, scoreB: -1, descA: "Eres un introvertido reflexivo y reservado.", descB: "Eres un extrovertido social y abierto." },
+            { id: 13, image: "Imagen13.PNG", optionA: "Opción A: +1 punto", optionB: "Opción B: -1 punto", scoreA: 1, scoreB: -1, descA: "Tu fortaleza reside en el análisis crítico.", descB: "Tu fortaleza reside en la creatividad abstracta." },
+            { id: 14, image: "Imagen14.PNG", optionA: "Opción A: +1 punto", optionB: "Opción B: -1 punto", scoreA: 1, scoreB: -1, descA: "Eres metódico, te gustan las reglas y la rutina.", descB: "Eres espontáneo, te gusta el cambio y la aventura." },
+            { id: 15, image: "Imagen15.PNG", optionA: "Opción A: +1 punto", optionB: "Opción B: -1 punto", scoreA: 1, scoreB: -1, descA: "Priorizas la lógica y la toma de decisiones basada en datos.", descB: "Priorizas los valores y el impacto en las personas." },
+            { id: 16, image: "Imagen16.PNG", optionA: "Opción A: +1 punto", optionB: "Opción B: -1 punto", scoreA: 1, scoreB: -1, descA: "Te sientes más cómodo cuando tienes el control de las situaciones.", descB: "Dejas que las situaciones te guíen, disfrutas el proceso." },
+            { id: 17, image: "Imagen17.PNG", optionA: "Opción A: +1 punto", optionB: "Opción B: -1 punto", scoreA: 1, scoreB: -1, descA: "Tu energía se incrementa con la interacción social.", descB: "Tu energía se recupera con el silencio y la soledad." },
+            { id: 18, image: "Imagen18.PNG", optionA: "Opción A: +1 punto", optionB: "Opción B: -1 punto", scoreA: 1, scoreB: -1, descA: "Eres un pensador lineal, una idea a la vez.", descB: "Eres un pensador paralelo, muchas ideas al mismo tiempo." },
+            { id: 19, image: "Imagen19.PNG", optionA: "Opción A: +1 punto", optionB: "Opción B: -1 punto", scoreA: 1, scoreB: -1, descA: "Eres muy bueno recordando detalles específicos del pasado.", descB: "Eres muy bueno imaginando escenarios posibles para el futuro." },
+            { id: 20, image: "Imagen20.PNG", optionA: "Opción A: +1 punto", optionB: "Opción B: -1 punto", scoreA: 1, scoreB: -1, descA: "Te defines por tu capacidad de planificar y organizar.", descB: "Te defines por tu capacidad de adaptarte y ser espontáneo." },
+        ];
+
+        // =================================================================================
+        // LÓGICA DE LA APLICACIÓN Y CONTROL DE FLUJO
+        // =================================================================================
+        const QUESTION_TIMER_SECONDS = 10;
+        const FEEDBACK_DURATION_SECONDS = 3; 
+
         let currentQuestionIndex = 0;
         let userName = '';
+        let totalScore = 0;
         let timerTimeout;
         let blinkTimeout;
-        // Se inicializan los contadores para cada letra
-        let scores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 }; 
+        let feedbackTimeout;
+        let tts = window.speechSynthesis;
+        let ttsActive = false;
 
         // Elementos del DOM
         const startScreen = document.getElementById('start-screen');
@@ -313,53 +301,43 @@
         const nameInput = document.getElementById('name-input');
         const questionCounter = document.getElementById('question-counter');
         const timerBar = document.getElementById('timer-bar');
+        const quizImage = document.getElementById('quiz-image');
         const questionText = document.getElementById('question-text');
-        const answersGrid = document.getElementById('answers-grid');
-        const congratsMessage = document.getElementById('congrats-message');
-        const personalityName = document.getElementById('personality-name');
-        const personalityDescription = document.getElementById('personality-description');
-        const dichotomyResults = document.getElementById('dichotomy-results');
-        const restartBtn = document.getElementById('restart-btn');
-        const exportPdfBtn = document.getElementById('export-pdf-btn');
+        const buttonsContainer = document.getElementById('buttons-container');
+        const btnA = document.getElementById('btn-a');
+        const btnB = document.getElementById('btn-b');
+        const feedbackOverlay = document.getElementById('feedback-overlay');
+        const finalScoreDisplay = document.getElementById('final-score-display');
+        const finalCongrats = document.getElementById('final-congrats');
+        const currentScoreDisplay = document.getElementById('current-score-display');
 
-        const answerMap = ['a', 'b']; // Solo A y B
 
         // Event Listeners
         startForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            userName = nameInput.value.trim() || 'Jugador Audaz';
+            userName = nameInput.value.trim() || 'Jugador Experto';
             startQuiz();
         });
-        restartBtn.addEventListener('click', restartQuiz);
-        // Función para la exportación PDF (Impresión del navegador)
-        exportPdfBtn.addEventListener('click', exportToPDF);
-
-        function exportToPDF() {
-            // Oculta los botones en el modo impresión para un reporte limpio
-            exportPdfBtn.style.display = 'none';
-            restartBtn.style.display = 'none';
-            
-            // Llama a la ventana de impresión del navegador
-            window.print();
-            
-            // Vuelve a mostrar los botones después de que el usuario interactúe con el diálogo de impresión
-            setTimeout(() => {
-                exportPdfBtn.style.display = 'block';
-                restartBtn.style.display = 'block';
-            }, 100);
-        }
+        document.getElementById('restart-btn').addEventListener('click', restartQuiz);
+        btnA.addEventListener('click', () => selectAnswer(QUIZ_QUESTIONS[currentQuestionIndex].scoreA, 'A'));
+        btnB.addEventListener('click', () => selectAnswer(QUIZ_QUESTIONS[currentQuestionIndex].scoreB, 'B'));
+        
+        // Clic en la retroalimentación para saltar y leer en voz alta
+        feedbackOverlay.addEventListener('click', handleFeedbackClick);
 
         // Funciones de control de pantalla
         function switchScreen(activeScreen) {
             document.querySelectorAll('.screen').forEach(screen => {
+                screen.style.display = 'none';
                 screen.classList.remove('active');
             });
+            activeScreen.style.display = 'flex'; // Usar flex para centrar
             activeScreen.classList.add('active');
         }
 
         function startQuiz() {
             currentQuestionIndex = 0;
-            scores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
+            totalScore = 0;
             switchScreen(quizScreen);
             displayQuestion();
         }
@@ -369,134 +347,171 @@
             switchScreen(startScreen);
         }
 
-        // Función principal para mostrar la pregunta
+        // --- LÓGICA DEL JUEGO ---
+
         function displayQuestion() {
+            // Asegurarse de que el TTS está detenido si el usuario avanzó rápido
+            if (ttsActive) {
+                tts.cancel();
+                ttsActive = false;
+            }
+
+            // Si llegamos al final, mostramos resultados
             if (currentQuestionIndex >= QUIZ_QUESTIONS.length) {
                 showResult();
                 return;
             }
-
+            
+            // Limpiar estados previos
             clearTimeout(timerTimeout);
             clearTimeout(blinkTimeout);
+            clearTimeout(feedbackTimeout);
             questionCounter.classList.remove('blinking'); 
-            
+            buttonsContainer.style.pointerEvents = 'auto'; // Habilitar botones
+
             const questionData = QUIZ_QUESTIONS[currentQuestionIndex];
             const questionNumber = currentQuestionIndex + 1; 
             
-            questionCounter.textContent = `PREGUNTA ${questionNumber} / ${QUIZ_QUESTIONS.length} - ¡TIEMPO LÍMITE!`;
-            questionText.textContent = questionData.text;
-            answersGrid.innerHTML = '';
-
-            // Generar las cartas de respuesta con la ruta de imagen dinámica (1a, 1b, 2a, 2b, etc.)
-            questionData.answers.forEach((answer, index) => {
-                const answerLetter = answerMap[index];
-                const imagePath = `img/${questionNumber}${answerLetter}.GIF`; 
-                
-                const answerCard = document.createElement('div');
-                answerCard.className = 'answer-card';
-                
-                answerCard.innerHTML = `
-                    <img src="${imagePath}" alt="Opción ${answerLetter.toUpperCase()} de la pregunta ${questionNumber}" class="answer-image" onerror="this.onerror=null;this.src='data:image/svg+xml,%3Csvg%20width%3D%22100%22%20height%3D%22100%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Crect%20width%3D%22100%22%20height%3D%22100%22%20fill%3D%22%234b5563%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20text-anchor%3D%22middle%22%20fill%3D%22white%22%20font-size%3D%2214%22%3E${questionNumber}${answerLetter.toUpperCase()}%3C%2Ftext%3E%3C%2Fsvg%3E';">
-                    <div class="answer-overlay"></div>
-                    <p class="answer-text">${answer.text}</p>
-                `;
-                // Manejar la selección: Sumar 1 punto a la dimensión seleccionada
-                answerCard.addEventListener('click', () => selectAnswer(answer.dimension, answerCard));
-                answersGrid.appendChild(answerCard);
-            });
+            // 1. Mostrar Imagen y Texto
+            quizImage.src = `img/${questionData.image}`; 
+            quizImage.classList.remove('dim-image'); // Quitar efecto de feedback
+            questionCounter.textContent = `PREGUNTA ${questionNumber} / ${QUIZ_QUESTIONS.length}`;
+            questionText.textContent = `¿Qué ves primero en esta imagen? (Imagen${questionData.id}.PNG)`;
             
+            // 2. Mostrar Botones
+            btnA.textContent = questionData.optionA;
+            btnB.textContent = questionData.optionB;
+            btnA.classList.remove('disabled');
+            btnB.classList.remove('disabled');
+
+            // 3. Ocultar Feedback
+            feedbackOverlay.style.display = 'none';
+            
+            // 4. Iniciar Temporizador
             startTimer();
         }
         
-        // Lógica del Temporizador con Alerta y Blink
         function startTimer() {
             timerBar.style.transition = 'none';
             timerBar.style.width = '100%';
 
-            void timerBar.offsetWidth; 
+            void timerBar.offsetWidth; // Forzar reflow
 
             timerBar.style.transition = `width ${QUESTION_TIMER_SECONDS}s linear`;
             timerBar.style.width = '0%';
             
-            // BLINK: Empezar a parpadear cuando queden 2 segundos
-            const blinkTime = (QUESTION_TIMER_SECONDS - 2) * 1000; 
+            // ALERTA SENSORIAL: Empezar a parpadear cuando queden 5 segundos
+            const alertTime = (QUESTION_TIMER_SECONDS - 5) * 1000; 
 
             blinkTimeout = setTimeout(() => {
                 questionCounter.classList.add('blinking');
-            }, blinkTime);
+            }, alertTime);
 
 
             timerTimeout = setTimeout(() => {
-                // El tiempo se agotó: Alerta y 0 puntos (no suma a ninguna dimensión)
+                // Tiempo agotado: No se suma punto (0)
                 questionCounter.classList.remove('blinking');
-                alert(`¡Se acabó el tiempo, ${userName}! Debes seleccionar una opción urgentemente. Pierdes el punto de esta pregunta. ⏱️`);
-                selectAnswer(null); // Pasa null para 0 puntos
+                alert(`¡Tiempo, ${userName}! El sistema avanza (Puntuación: 0).`);
+                selectAnswer(0, 'TIMEOUT'); // Pasa 0 para puntaje neutro y forzar el avance
             }, QUESTION_TIMER_SECONDS * 1000);
         }
 
-        function selectAnswer(dimension, selectedElement = null) {
+        function selectAnswer(score, selectedOption) {
             clearTimeout(timerTimeout);
             clearTimeout(blinkTimeout); 
             questionCounter.classList.remove('blinking');
             
-            // Si hay dimensión, sumar el punto
-            if (dimension) {
-                scores[dimension]++;
-            }
+            // 1. Actualizar Puntuación
+            totalScore += score;
             
-            // Deshabilitar todas las opciones
-            const allCards = answersGrid.querySelectorAll('.answer-card');
-            allCards.forEach(card => card.classList.add('disabled'));
-
-            if (selectedElement) {
-                selectedElement.style.border = '3px solid #4ade80'; 
-                selectedElement.style.transform = 'scale(1.03)';
-                selectedElement.style.boxShadow = '0 0 20px #4ade80';
-            }
-
-            // Pequeño retraso para avanzar
-            setTimeout(() => {
-                currentQuestionIndex++;
-                displayQuestion();
-            }, 500); 
+            // 2. Deshabilitar botones inmediatamente para evitar doble click
+            buttonsContainer.style.pointerEvents = 'none';
+            btnA.classList.add('disabled');
+            btnB.classList.add('disabled');
+            
+            // 3. Mostrar Retroalimentación
+            showFeedback(score, selectedOption);
         }
 
-        // Función para mostrar resultados y calcular MBTI
+        // --- RETROALIMENTACIÓN Y TTS ---
+
+        function showFeedback(score, selectedOption) {
+            const data = QUIZ_QUESTIONS[currentQuestionIndex];
+            
+            // 1. Dim y mostrar overlay
+            quizImage.classList.add('dim-image');
+            feedbackOverlay.style.display = 'flex';
+            
+            // 2. Preparar textos de retroalimentación
+            const descA_text = data.descA;
+            const descB_text = data.descB;
+
+            document.getElementById('feedback-title').textContent = `Tu elección te dió ${score} punto(s).`;
+            document.getElementById('feedback-desc-a').innerHTML = `**Opción A (+1)**: ${descA_text}`;
+            document.getElementById('feedback-desc-b').innerHTML = `**Opción B (-1)**: ${descB_text}`;
+            document.getElementById('current-score-display').textContent = totalScore;
+            
+            // 3. Iniciar temporizador de 3 segundos
+            feedbackTimeout = setTimeout(() => {
+                nextQuestion();
+            }, FEEDBACK_DURATION_SECONDS * 1000);
+        }
+
+        function handleFeedbackClick() {
+            // El usuario toca/clickea el overlay de feedback.
+            // 1. Leer el texto en voz alta
+            const descA = document.getElementById('feedback-desc-a').textContent;
+            const descB = document.getElementById('feedback-desc-b').textContent;
+            const fullText = `Tu puntuación es ${totalScore}. ${descA}. Y ${descB}.`;
+            
+            speakText(fullText);
+
+            // 2. Saltar a la siguiente pregunta inmediatamente
+            clearTimeout(feedbackTimeout);
+            nextQuestion();
+        }
+
+        function speakText(text) {
+            if (!tts) return; // Si TTS no es compatible, salir
+
+            // Detener cualquier lectura previa
+            tts.cancel();
+            
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'es-ES'; // Asegurar el idioma
+            utterance.rate = 1.1; // Un poco más rápido
+            
+            utterance.onstart = () => { ttsActive = true; };
+            utterance.onend = () => { ttsActive = false; };
+
+            tts.speak(utterance);
+        }
+
+
+        function nextQuestion() {
+            // Detener TTS si aún está leyendo
+            tts.cancel();
+            ttsActive = false;
+
+            currentQuestionIndex++;
+            displayQuestion();
+        }
+        
+        // --- RESULTADO FINAL ---
+
         function showResult() {
-            // 1. Calcular el tipo de 4 letras
-            const type = (scores.E >= scores.I ? 'E' : 'I') +
-                         (scores.S >= scores.N ? 'S' : 'N') +
-                         (scores.T >= scores.F ? 'T' : 'F') +
-                         (scores.J >= scores.P ? 'J' : 'P');
+            finalCongrats.textContent = `¡Excelente esfuerzo, ${userName}!`;
+            finalScoreDisplay.textContent = totalScore;
             
-            const result = MBTI_DESCRIPTIONS[type] || { name: 'Tipo Desconocido', role: 'Error', description: 'No se encontró una descripción para este tipo. Revisa las respuestas.' };
+            // Puedes agregar aquí una descripción de la personalidad basada en el puntaje total
+            // Por ejemplo: Positivo es "Visionario", Negativo es "Analítico", etc.
             
-            congratsMessage.textContent = `¡Felicidades, ${userName}!`;
-            personalityName.textContent = type; // Muestra el tipo (ej: ENTJ)
-            personalityDescription.textContent = `Tu rol es **${result.role}**. ${result.description}`;
-
-            // 2. Generar el desglose de las dicotomías
-            dichotomyResults.innerHTML = `B
-                <div class="dichotomy-result">
-                    <h4>ENERGÍA: <span class="dimension-score">${scores.E}</span> Extraversión (E) vs. <span class="dimension-score">${scores.I}</span> Introversión (I)</h4>
-                    <p>Tu preferencia es: <span class="dimension-score">${scores.E > scores.I ? 'Extraversión (E)' : 'Introversión (I)'}</span></p>
-                </div>
-                <div class="dichotomy-result">
-                    <h4>PERCEPCIÓN: <span class="dimension-score">${scores.S}</span> Sensorial (S) vs. <span class="dimension-score">${scores.N}</span> Intuitiva (N)</h4>
-                    <p>Tu preferencia es: <span class="dimension-score">${scores.S > scores.N ? 'Sensorial (S)' : 'Intuitiva (N)'}</span></p>
-                </div>
-                <div class="dichotomy-result">
-                    <h4>DECISIÓN: <span class="dimension-score">${scores.T}</span> Pensamiento (T) vs. <span class="dimension-score">${scores.F}</span> Sentimiento (F)</h4>
-                    <p>Tu preferencia es: <span class="dimension-score">${scores.T > scores.F ? 'Pensamiento (T)' : 'Sentimiento (F)'}</span></p>
-                </div>
-                <div class="dichotomy-result">
-                    <h4>ESTILO: <span class="dimension-score">${scores.J}</span> Juicio (J) vs. <span class="dimension-score">${scores.P}</span> Percepción (P)</h4>
-                    <p>Tu preferencia es: <span class="dimension-score">${scores.J > scores.P ? 'Juicio (J)' : 'Percepción (P)'}</span></p>
-                </div>
-            `;
-
             switchScreen(resultScreen);
         }
+
+        // Inicializar
+        switchScreen(startScreen);
+
     });
     </script>
 </body>
